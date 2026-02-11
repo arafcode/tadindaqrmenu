@@ -2,6 +2,13 @@
 
 Restoran ve kafeler için **QR kod tabanlı dijital menü sistemi**. SaaS modeli ile aylık tekrarlayan gelir elde edin.
 
+Görseller:
+<img width="1892" height="906" alt="Screenshot_1" src="https://github.com/user-attachments/assets/ace0ff6a-9f75-42ec-85b5-10f850f64c81" />
+<img width="473" height="864" alt="Screenshot_2" src="https://github.com/user-attachments/assets/bbc5bb8e-e2e1-43ce-acf3-e425270d99f4" />
+<img width="559" height="869" alt="Screenshot_3" src="https://github.com/user-attachments/assets/d8f73af6-76eb-409b-8d57-c684bd44367d" />
+
+
+
 ## ⚡ Hızlı Başlangıç
 
 ### Docker ile Kurulum (Önerilen)
