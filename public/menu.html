@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Menü</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 0; }
+    
+    ::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    
+    /* Glass */
+    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
+    .glass-dark { background: rgba(0,0,0,0.3); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
+    
+    /* Tabs */
+    .category-tab { scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .category-tab:active { transform: scale(0.95); }
+    .category-tabs { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    
+    /* Items */
+    .menu-item { 
+      animation: itemReveal 0.5s cubic-bezier(0.16,1,0.3,1) both;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .menu-item:active { transform: scale(0.98); }
+    @keyframes itemReveal { 
+      from { opacity: 0; transform: translateY(16px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    .menu-item:nth-child(1) { animation-delay: 0s; }
+    .menu-item:nth-child(2) { animation-delay: 0.05s; }
+    .menu-item:nth-child(3) { animation-delay: 0.1s; }
+    .menu-item:nth-child(4) { animation-delay: 0.15s; }
+    .menu-item:nth-child(5) { animation-delay: 0.2s; }
+    
+    /* Popular */
+    .popular-card { transition: transform 0.2s ease; }
+    .popular-card:active { transform: scale(0.96); }
+    
+    /* Cover gradient */
+    .cover-fade::after { 
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; 
+      background: linear-gradient(to top, var(--bg-color, #ffffff), transparent); 
+      pointer-events: none; 
+    }
+    
+    /* Image hover */
+    .item-img { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .menu-item:hover .item-img { transform: scale(1.06); }
+    
+    /* Line clamp */
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    
+    /* Price */
+    .price-tag { letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    
+    /* Modal */
+    #itemModal .modal-bg { transition: opacity 0.3s ease; }
+    #itemModal .modal-sheet { transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+
+  <!-- Loading -->
+  <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <div class="text-center">
+      <div class="relative w-14 h-14 mx-auto mb-5">
+        <div class="absolute inset-0 rounded-full border-[3px] border-gray-100"></div>
+        <div class="absolute inset-0 rounded-full border-[3px] border-transparent border-t-purple-600 animate-spin"></div>
+        <div class="absolute inset-[6px] rounded-full border-[2px] border-transparent border-b-pink-500 animate-spin" style="animation-direction:reverse;animation-duration:0.8s"></div>
+      </div>
+      <p class="text-gray-400 text-sm font-medium tracking-wide" data-i18n="menu.loading">Menü yükleniyor...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="errorScreen" class="hidden fixed inset-0 flex items-center justify-center bg-white z-50">
+    <div class="text-center px-8">
+      <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">😔</div>
+      <h2 class="text-xl font-bold mb-2 text-gray-900" data-i18n="menu.not_found_title">Menü Bulunamadı</h2>
+      <p class="text-gray-400 text-sm" data-i18n="menu.not_found_desc">Bu menü mevcut değil veya kaldırılmış olabilir.</p>
+    </div>
+  </div>
+
+  <!-- Menu App -->
+  <div id="menuApp" class="hidden max-w-lg mx-auto">
+    
+    <!-- Cover -->
+    <header id="menuHeader" class="relative">
+      <div id="coverImage" class="cover-fade h-56 sm:h-64 bg-gradient-to-br from-purple-600 to-pink-500 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30"></div>
+        <button onclick="openLanguagePicker(this)" class="absolute top-4 right-4 z-10 px-3 py-2 glass rounded-2xl text-xs font-bold shadow-lg border border-white/30 hover:shadow-xl transition-all flex items-center gap-1.5">
+          🌐 <span class="lang-toggle-label">TR</span>
+        </button>
+      </div>
+      
+      <!-- Restaurant Card -->
+      <div class="relative -mt-24 mx-4 z-10">
+        <div id="restaurantInfoCard" class="rounded-3xl p-5 shadow-2xl shadow-black/5 border border-white/40" style="background:rgba(255,255,255,0.8);backdrop-filter:blur(24px)">
+          <div class="flex items-start gap-4">
+            <div id="restaurantLogo" class="w-[60px] h-[60px] rounded-2xl bg-white shadow-lg flex items-center justify-center text-2xl border-2 border-white overflow-hidden flex-shrink-0 ring-2 ring-black/5">
+              🍽️
+            </div>
+            <div class="flex-1 min-w-0 pt-0.5">
+              <h1 id="restaurantName" class="text-lg font-extrabold tracking-tight leading-snug"></h1>
+              <p id="restaurantDesc" class="text-xs mt-1 opacity-60 line-clamp-2 leading-relaxed"></p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11px] opacity-50 font-medium">
+            <span id="restaurantAddress" class="flex items-center gap-1"></span>
+            <span id="restaurantPhone" class="flex items-center gap-1"></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search -->
+    <div class="px-4 mt-5 mb-2">
+      <div class="relative">
+        <input type="text" id="searchInput" placeholder="Menüde ara..." data-i18n-placeholder="menu.search" 
+          class="w-full pl-11 pr-4 py-3 rounded-2xl text-sm outline-none transition-all border border-transparent focus:border-purple-200 focus:shadow-lg focus:shadow-purple-500/5"
+          style="background: rgba(0,0,0,0.04);">
+        <svg class="w-[18px] h-[18px] text-gray-300 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+
+    <!-- Category Tabs (Sticky) -->
+    <nav class="sticky top-0 z-30" id="categoryNav" style="backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)">
+      <div class="px-4 py-3">
+        <div id="categoryTabs" class="category-tabs flex overflow-x-auto gap-2">
+        </div>
+      </div>
+    </nav>
+
+    <!-- Popular Items -->
+    <div id="popularSection" class="hidden pb-4">
+      <div class="px-4 flex items-center gap-2 mb-3">
+        <div class="w-7 h-7 bg-amber-50 rounded-xl flex items-center justify-center text-sm">🔥</div>
+        <h2 class="font-bold text-sm tracking-tight" data-i18n="menu.popular">Popüler</h2>
+      </div>
+      <div id="popularItems" class="flex overflow-x-auto gap-3 px-4 pb-1">
+      </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div id="menuCategories" class="px-4 pb-28">
+    </div>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 z-20" id="menuFooter">
+      <div class="max-w-lg mx-auto px-4 py-3 text-center" id="menuFooterInner">
+        <a href="/" class="text-[10px] opacity-30 hover:opacity-60 transition-opacity font-medium tracking-widest uppercase" data-i18n="menu.footer">
+          Tadında Menu ile oluşturuldu ✨
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Item Modal -->
+  <div id="itemModal" class="hidden fixed inset-0 z-50">
+    <div class="modal-bg absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeItemModal()"></div>
+    <div class="modal-sheet absolute bottom-0 left-0 right-0 max-w-lg mx-auto">
+      <div class="bg-white rounded-t-[2rem] max-h-[85vh] overflow-y-auto shadow-2xl">
+        <div class="flex justify-center pt-3 pb-1"><div class="w-10 h-1 bg-gray-200 rounded-full"></div></div>
+        <div id="itemModalImage" class="h-64 bg-gray-50 relative mx-4 rounded-2xl overflow-hidden">
+          <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 bg-black/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center text-lg hover:bg-black/50 transition">&times;</button>
+        </div>
+        <div class="p-5 pt-4">
+          <div class="flex justify-between items-start gap-3 mb-2">
+            <h2 id="itemModalName" class="text-lg font-bold leading-snug"></h2>
+            <span id="itemModalPrice" class="text-lg font-extrabold text-purple-600 whitespace-nowrap price-tag"></span>
+          </div>
+          <p id="itemModalDesc" class="text-sm text-gray-400 leading-relaxed mb-4"></p>
+          <div id="itemModalAllergens" class="hidden">
+            <div class="flex items-center gap-2 px-3 py-2.5 bg-amber-50 border border-amber-100 rounded-2xl">
+              <span class="text-amber-500 text-sm">⚠️</span>
+              <span class="text-xs font-medium text-amber-700"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script>
+    let menuData = null;
+    let originalMenuData = null;
+    let activeCategoryId = null;
+
+    function isDarkBg(hex) {
+      if (!hex) return false;
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+      const r = parseInt(hex.substr(0,2), 16);
+      const g = parseInt(hex.substr(2,2), 16);
+      const b = parseInt(hex.substr(4,2), 16);
+      return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.55;
+    }
+
+    function getThemeColors(bgColor) {
+      const dark = isDarkBg(bgColor);
+      return {
+        isDark: dark,
+        textPrimary: dark ? '#FFFFFF' : '#111827',
+        textSecondary: dark ? '#d1d5db' : '#6b7280',
+        textMuted: dark ? '#9ca3af' : '#9ca3af',
+        cardBg: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.85)',
+        cardBorder: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)',
+        inputBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
+        inputText: dark ? '#FFFFFF' : '#111827',
+        badgeBg: dark ? 'rgba(251,191,36,0.15)' : '#fef3c7',
+        badgeText: dark ? '#fbbf24' : '#b45309',
+        inactiveTabBg: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+        inactiveTabText: dark ? 'rgba(255,255,255,0.6)' : '#6b7280',
+        footerBg: dark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.7)',
+        navBg: dark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)',
+        popularCardBg: dark ? 'rgba(255,255,255,0.08)' : '#ffffff',
+        popularCardBorder: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+        infoBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.8)',
+        infoBorder: dark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.4)',
+      };
+    }
+
+    function hexToRgba(hex, alpha) {
+      hex = hex.replace('#', '');
+      const r = parseInt(hex.substr(0,2), 16);
+      const g = parseInt(hex.substr(2,2), 16);
+      const b = parseInt(hex.substr(4,2), 16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    async function loadMenu() {
+      const slug = window.location.pathname.split('/m/')[1];
+      if (!slug) { showError(); return; }
+      try {
+        if (!originalMenuData) {
+          const res = await fetch(`/api/public/menu/${slug}`);
+          if (!res.ok) throw new Error();
+          originalMenuData = await res.json();
+        }
+        const lang = getCurrentLang();
+        if (lang !== 'tr' && typeof translateMenuDataLive === 'function') {
+          showTranslating(true);
+          menuData = await translateMenuDataLive(originalMenuData, lang);
+          showTranslating(false);
+        } else {
+          menuData = originalMenuData;
+        }
+        renderMenu();
+      } catch (e) {
+        showError();
+      }
+    }
+
+    function showError() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('errorScreen').classList.remove('hidden');
+    }
+
+    function showTranslating(show) {
+      let el = document.getElementById('translatingOverlay');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'translatingOverlay';
+        el.className = 'fixed inset-0 bg-white/70 backdrop-blur-sm z-40 flex items-center justify-center';
+        el.innerHTML = `<div class="text-center"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div><p class="text-gray-600 font-medium text-sm">🌐 Translating...</p></div>`;
+        document.body.appendChild(el);
+      }
+      el.style.display = show ? 'flex' : 'none';
+    }
+
+    function renderMenu() {
+      const { restaurant, menu } = menuData;
+      const bgColor = restaurant.bg_color || '#f8fafc';
+      const primary = restaurant.primary_color || '#7c3aed';
+      const secondary = restaurant.secondary_color || '#ec4899';
+      const theme = getThemeColors(bgColor);
+      const currency = restaurant.currency || '₺';
+
+      // Set CSS var for cover-fade
+      document.getElementById('coverImage').style.setProperty('--bg-color', bgColor);
+
+      // Body
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = theme.textPrimary;
+
+      // Cover
+      if (restaurant.cover_url) {
+        const cover = document.getElementById('coverImage');
+        cover.style.backgroundImage = `url(${restaurant.cover_url})`;
+        cover.style.backgroundSize = 'cover';
+        cover.style.backgroundPosition = 'center';
+      } else {
+        document.getElementById('coverImage').style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
+      }
+
+      // Restaurant Info Card 
+      const infoCard = document.getElementById('restaurantInfoCard');
+      infoCard.style.background = theme.infoBg;
+      infoCard.style.borderColor = theme.infoBorder;
+      if (theme.isDark) infoCard.style.backdropFilter = 'blur(24px)';
+
+      // Logo
+      const logoEl = document.getElementById('restaurantLogo');
+      if (restaurant.logo_url) {
+        logoEl.innerHTML = `<img src="${restaurant.logo_url}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='🍽️'">`;
+      } else {
+        logoEl.innerHTML = '🍽️';
+      }
+
+      // Name & Desc
+      document.getElementById('restaurantName').textContent = restaurant.name;
+      document.getElementById('restaurantName').style.color = theme.textPrimary;
+      const descEl = document.getElementById('restaurantDesc');
+      descEl.textContent = restaurant.description || '';
+      descEl.style.color = theme.textSecondary;
+
+      if (restaurant.address) {
+        const a = document.getElementById('restaurantAddress');
+        a.innerHTML = `📍 ${restaurant.address}`;
+        a.style.color = theme.textSecondary;
+      }
+      if (restaurant.phone) {
+        const p = document.getElementById('restaurantPhone');
+        p.innerHTML = `📞 ${restaurant.phone}`;
+        p.style.color = theme.textSecondary;
+      }
+
+      // Language picker refresh
+      if (!document.getElementById('coverImage').querySelector('.lang-btn-cover')) {
+        const btn = document.createElement('button');
+        btn.className = 'lang-btn-cover absolute top-4 right-4 z-10 px-3 py-2 glass rounded-2xl text-xs font-bold shadow-lg border border-white/30 hover:shadow-xl transition-all flex items-center gap-1.5';
+        btn.onclick = function() { openLanguagePicker(this); };
+        const info = getLangInfo(getCurrentLang());
+        btn.innerHTML = `🌐 <span class="lang-toggle-label">${info.flag} ${info.code.toUpperCase()}</span>`;
+        document.getElementById('coverImage').appendChild(btn);
+      }
+
+      // Search
+      const searchInput = document.getElementById('searchInput');
+      searchInput.style.backgroundColor = theme.inputBg;
+      searchInput.style.color = theme.inputText;
+
+      // Nav (sticky) - apply bg directly to nav to prevent white strip
+      const navEl = document.getElementById('categoryNav');
+      navEl.style.background = theme.navBg;
+      navEl.style.borderBottom = `1px solid ${theme.cardBorder}`;
+
+      // Category Tabs
+      const tabsContainer = document.getElementById('categoryTabs');
+      tabsContainer.innerHTML = menu.map((cat, i) => `
+        <button onclick="scrollToCategory('${cat.id}')" 
+          class="category-tab flex-shrink-0 px-4 py-2 rounded-2xl text-xs font-semibold transition whitespace-nowrap"
+          id="tab-${cat.id}"
+          style="background: ${i === 0 ? primary : theme.inactiveTabBg}; color: ${i === 0 ? '#fff' : theme.inactiveTabText}; ${i === 0 ? 'box-shadow: 0 4px 12px ' + hexToRgba(primary, 0.3) : ''}">
+          ${cat.name}
+        </button>
+      `).join('');
+
+      // Popular
+      const popularItems = [];
+      menu.forEach(cat => {
+        cat.items.filter(i => i.is_popular).forEach(item => {
+          popularItems.push({ ...item, category_name: cat.name });
+        });
+      });
+
+      const popSection = document.getElementById('popularSection');
+      if (popularItems.length > 0) {
+        popSection.classList.remove('hidden');
+        popSection.querySelector('h2').style.color = theme.textPrimary;
+        document.getElementById('popularItems').innerHTML = popularItems.map(item => `
+          <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
+            class="popular-card flex-shrink-0 w-36 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-shadow"
+            style="background:${theme.popularCardBg}; border:1px solid ${theme.popularCardBorder}">
+            <div class="relative overflow-hidden">
+              ${item.image_url 
+                ? `<img src="${item.image_url}" class="w-full h-28 object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="hidden w-full h-28 bg-gray-50 items-center justify-center text-3xl">🍽️</div>` 
+                : `<div class="w-full h-28 bg-gray-50 flex items-center justify-center text-3xl">🍽️</div>`}
+            </div>
+            <div class="p-2.5">
+              <div class="font-semibold text-xs truncate leading-tight" style="color:${theme.textPrimary}">${item.name}</div>
+              <div class="font-extrabold text-sm mt-1.5 price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        popSection.classList.add('hidden');
+      }
+
+      // Menu categories & items
+      const menuContainer = document.getElementById('menuCategories');
+      menuContainer.innerHTML = menu.map(cat => `
+        <div id="category-${cat.id}" class="mb-6">
+          <div class="pt-5 pb-3">
+            <h2 class="font-bold text-base tracking-tight" style="color:${theme.textPrimary}">${cat.name}</h2>
+            ${cat.description ? `<p class="text-xs mt-0.5 leading-relaxed" style="color:${theme.textSecondary}">${cat.description}</p>` : ''}
+          </div>
+          <div class="space-y-2.5">
+            ${cat.items.map(item => `
+              <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
+                class="menu-item group rounded-2xl p-3.5 flex gap-3.5 cursor-pointer"
+                style="background:${theme.cardBg}; border:1px solid ${theme.cardBorder}; backdrop-filter:blur(10px)">
+                ${item.image_url ? `
+                  <div class="w-[72px] h-[72px] rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-black/5">
+                    <img src="${item.image_url}" class="item-img w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gray-50 flex items-center justify-center text-2xl\\'>🍽️</div>'">
+                  </div>
+                ` : ''}
+                <div class="flex-1 min-w-0 flex flex-col justify-center">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-sm leading-tight" style="color:${theme.textPrimary}">${item.name}</span>
+                    ${item.is_popular ? `<span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-md font-bold" style="background:${theme.badgeBg};color:${theme.badgeText}">⭐</span>` : ''}
+                  </div>
+                  ${item.description ? `<p class="text-xs line-clamp-2 mt-0.5 leading-relaxed" style="color:${theme.textMuted}">${item.description}</p>` : ''}
+                  <div class="font-extrabold text-sm mt-1.5 price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</div>
+                </div>
+                ${!item.image_url ? `<div class="flex items-center flex-shrink-0"><svg class="w-4 h-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Footer
+      const footerEl = document.getElementById('menuFooter');
+      footerEl.style.background = theme.footerBg;
+      footerEl.style.backdropFilter = 'blur(20px)';
+      footerEl.style.WebkitBackdropFilter = 'blur(20px)';
+      footerEl.style.borderTop = `1px solid ${theme.cardBorder}`;
+      footerEl.querySelector('a').style.color = theme.textMuted;
+
+      // Search filter
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.menu-item').forEach(el => {
+          el.style.display = !q || el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+        });
+      });
+
+      // Intersection Observer for tabs
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveTab(entry.target.id.replace('category-', ''));
+          }
+        });
+      }, { rootMargin: '-120px 0px -65% 0px' });
+      menu.forEach(cat => {
+        const el = document.getElementById(`category-${cat.id}`);
+        if (el) observer.observe(el);
+      });
+
+      // Done
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('menuApp').classList.remove('hidden');
+    }
+
+    function scrollToCategory(catId) {
+      const el = document.getElementById(`category-${catId}`);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 130;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      setActiveTab(catId);
+    }
+
+    function setActiveTab(catId) {
+      if (activeCategoryId === catId) return;
+      activeCategoryId = catId;
+      const restaurant = menuData.restaurant;
+      const primary = restaurant.primary_color || '#7c3aed';
+      const theme = getThemeColors(restaurant.bg_color || '#f8fafc');
+      document.querySelectorAll('.category-tab').forEach(tab => {
+        const active = tab.id === `tab-${catId}`;
+        tab.style.background = active ? primary : theme.inactiveTabBg;
+        tab.style.color = active ? '#fff' : theme.inactiveTabText;
+        tab.style.boxShadow = active ? `0 4px 12px ${hexToRgba(primary, 0.3)}` : 'none';
+        if (active) tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+    }
+
+    function showItemDetail(item) {
+      const restaurant = menuData.restaurant;
+      const primary = restaurant.primary_color || '#7c3aed';
+      const modal = document.getElementById('itemModal');
+      const imgEl = document.getElementById('itemModalImage');
+      
+      if (item.image_url) {
+        imgEl.innerHTML = `
+          <img src="${item.image_url}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gray-50 flex items-center justify-center text-5xl\\'>🍽️</div><button onclick=\\'closeItemModal()\\' class=\\'absolute top-3 right-3 w-9 h-9 bg-black/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center text-lg\\'>&times;</button>'">
+          <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 bg-black/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center text-lg hover:bg-black/50 transition">&times;</button>
+        `;
+      } else {
+        imgEl.innerHTML = `
+          <div class="w-full h-full bg-gray-50 flex items-center justify-center text-5xl">🍽️</div>
+          <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 bg-black/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center text-lg hover:bg-black/50 transition">&times;</button>
+        `;
+      }
+
+      document.getElementById('itemModalName').textContent = item.name;
+      const priceEl = document.getElementById('itemModalPrice');
+      priceEl.textContent = `${restaurant.currency}${Number(item.price).toFixed(0)}`;
+      priceEl.style.color = primary;
+      document.getElementById('itemModalDesc').textContent = item.description || t('menu.no_desc');
+      
+      if (item.allergens) {
+        document.getElementById('itemModalAllergens').classList.remove('hidden');
+        document.getElementById('itemModalAllergens').querySelector('span:last-child').textContent = `${t('menu.allergens')}: ${item.allergens}`;
+      } else {
+        document.getElementById('itemModalAllergens').classList.add('hidden');
+      }
+
+      modal.classList.remove('hidden');
+      modal.onclick = (e) => { if (e.target.classList.contains('modal-bg')) closeItemModal(); };
+    }
+
+    function closeItemModal() {
+      document.getElementById('itemModal').classList.add('hidden');
+    }
+
+    // Init
+    loadMenu();
+
+    window.addEventListener('languageChanged', async () => {
+      if (!originalMenuData) return;
+      activeCategoryId = null;
+      const lang = getCurrentLang();
+      if (lang !== 'tr' && typeof translateMenuDataLive === 'function') {
+        showTranslating(true);
+        menuData = await translateMenuDataLive(originalMenuData, lang);
+        showTranslating(false);
+      } else {
+        menuData = originalMenuData;
+      }
+      renderMenu();
+      applyTranslations();
+    });
+  </script>
+</body>
+</html>

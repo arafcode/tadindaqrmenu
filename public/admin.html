@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tadında Menu - Yönetim Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .sidebar { transition: transform 0.3s ease; }
+    .toast { animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- ==================== AUTH SCREENS ==================== -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <div class="flex items-center justify-center space-x-3 mb-4">
+          <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+            <span class="text-2xl">🍽️</span>
+          </div>
+          <span class="text-3xl font-bold">Tadında<span class="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Menu</span></span>
+        </div>
+      </div>
+
+      <!-- Language Picker -->
+      <div class="flex justify-end mb-4">
+        <button onclick="openLanguagePicker(this)" class="px-3 py-1.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-100 transition">
+          🌐 <span class="lang-toggle-label">TR</span>
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-6" data-i18n="auth.login_title">Giriş Yap</h2>
+        <form onsubmit="handleLogin(event)">
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.email">Email</label>
+            <input type="email" id="loginEmail" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="ornek@email.com" data-i18n-placeholder="auth.email_placeholder">
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.password">Şifre</label>
+            <input type="password" id="loginPassword" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="••••••••" data-i18n-placeholder="auth.password_placeholder">
+          </div>
+          <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition" data-i18n="auth.login_btn">
+            Giriş Yap
+          </button>
+        </form>
+        <p class="text-center text-gray-500 mt-4">
+          <span data-i18n="auth.no_account">Hesabınız yok mu?</span> <a href="#" onclick="showRegister()" class="text-purple-600 font-medium" data-i18n="auth.register_link">Kayıt Ol</a>
+        </p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="bg-white rounded-2xl shadow-lg p-8 hidden">
+        <h2 class="text-2xl font-bold mb-6" data-i18n="auth.register_title">Hesap Oluştur</h2>
+        <form onsubmit="handleRegister(event)">
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.business_name">İşletme Adı</label>
+            <input type="text" id="regBusiness" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="Restoranınızın adı" data-i18n-placeholder="auth.business_placeholder">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.email">Email</label>
+            <input type="email" id="regEmail" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="ornek@email.com" data-i18n-placeholder="auth.email_placeholder">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.phone">Telefon</label>
+            <input type="tel" id="regPhone" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="0555 123 4567" data-i18n-placeholder="auth.phone_placeholder">
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="auth.password_hint">Şifre (min 6 karakter)</label>
+            <input type="password" id="regPassword" required minlength="6" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="••••••••" data-i18n-placeholder="auth.password_placeholder">
+          </div>
+          <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition" data-i18n="auth.register_btn">
+            Ücretsiz Kayıt Ol
+          </button>
+        </form>
+        <p class="text-center text-gray-500 mt-4">
+          <span data-i18n="auth.has_account">Zaten hesabınız var mı?</span> <a href="#" onclick="showLogin()" class="text-purple-600 font-medium" data-i18n="auth.login_link">Giriş Yap</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div id="dashboardScreen" class="hidden">
+    <!-- Mobile Header -->
+    <div class="lg:hidden fixed top-0 left-0 right-0 bg-white z-50 px-4 py-3 flex justify-between items-center border-b">
+      <button onclick="toggleSidebar()" class="text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <span class="font-bold">Tadında Menu</span>
+      <div class="flex items-center gap-2">
+        <button onclick="openLanguagePicker(this)" class="px-2 py-1 border border-gray-300 rounded-full text-xs font-medium">🌐 <span class="lang-toggle-label">TR</span></button>
+        <button onclick="handleLogout()" class="text-gray-600 text-sm" data-i18n="sidebar.mobile_logout">Çıkış</button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-40 transform -translate-x-full lg:translate-x-0">
+      <div class="p-6">
+        <div class="flex items-center space-x-2 mb-8">
+          <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+            <span class="text-xl">🍽️</span>
+          </div>
+          <span class="text-xl font-bold">Tadında<span class="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Menu</span></span>
+        </div>
+        <nav class="space-y-1">
+          <button onclick="showSection('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left hover:bg-purple-50 hover:text-purple-700 transition" data-section="dashboard">
+            <span>📊</span> <span data-i18n="sidebar.dashboard">Dashboard</span>
+          </button>
+          <button onclick="showSection('restaurants')" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left hover:bg-purple-50 hover:text-purple-700 transition" data-section="restaurants">
+            <span>🏪</span> <span data-i18n="sidebar.restaurants">Restoranlarım</span>
+          </button>
+          <button onclick="showSection('menu-editor')" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left hover:bg-purple-50 hover:text-purple-700 transition" data-section="menu-editor">
+            <span>📋</span> <span data-i18n="sidebar.menu_editor">Menü Düzenle</span>
+          </button>
+          <button onclick="showSection('qr-code')" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left hover:bg-purple-50 hover:text-purple-700 transition" data-section="qr-code">
+            <span>📱</span> <span data-i18n="sidebar.qr_code">QR Kod</span>
+          </button>
+          <button onclick="showSection('analytics')" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left hover:bg-purple-50 hover:text-purple-700 transition" data-section="analytics">
+            <span>📈</span> <span data-i18n="sidebar.analytics">Analitik</span>
+          </button>
+        </nav>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 p-6 border-t">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white font-bold" id="userAvatar">U</div>
+          <div>
+            <div class="font-medium text-sm" id="userName">Kullanıcı</div>
+            <div class="text-xs text-gray-400" id="userPlan">Ücretsiz Plan</div>
+          </div>
+        </div>
+        <button onclick="openLanguagePicker(this)" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-gray-600 text-sm hover:bg-gray-100 rounded-xl transition mb-2 border border-gray-200">
+          🌐 <span class="lang-toggle-label">TR</span>
+        </button>
+        <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-red-500 text-sm hover:bg-red-50 rounded-xl transition" data-i18n="sidebar.logout">
+          🚪 Çıkış Yap
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
+      <div class="p-6 lg:p-8">
+
+        <!-- DASHBOARD SECTION -->
+        <section id="section-dashboard" class="content-section">
+          <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-3xl mb-2">🏪</div>
+              <div class="text-2xl font-bold" id="statRestaurants">0</div>
+              <div class="text-gray-500 text-sm">Toplam Restoran</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-3xl mb-2">👁️</div>
+              <div class="text-2xl font-bold" id="statViewsToday">0</div>
+              <div class="text-gray-500 text-sm">Bugünkü Görüntülenme</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-3xl mb-2">📅</div>
+              <div class="text-2xl font-bold" id="statViewsMonth">0</div>
+              <div class="text-gray-500 text-sm">Bu Ay Görüntülenme</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-3xl mb-2">📊</div>
+              <div class="text-2xl font-bold" id="statViewsTotal">0</div>
+              <div class="text-gray-500 text-sm">Toplam Görüntülenme</div>
+            </div>
+          </div>
+          <div id="noRestaurantMsg" class="bg-white rounded-2xl p-12 text-center border border-gray-100">
+            <div class="text-6xl mb-4">🍽️</div>
+            <h3 class="text-xl font-bold mb-2">Henüz restoran eklememişsiniz</h3>
+            <p class="text-gray-500 mb-6">İlk restoranınızı ekleyerek dijital menü oluşturmaya başlayın!</p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onclick="showSection('restaurants')" class="gradient-bg text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition">
+                ➕ Restoran Ekle
+              </button>
+              <button onclick="setupDemo()" class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition">
+                🎮 Demo Oluştur
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- RESTAURANTS SECTION -->
+        <section id="section-restaurants" class="content-section hidden">
+          <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold" data-i18n="rest.title">Restoranlarım</h1>
+            <button onclick="showAddRestaurantModal()" class="gradient-bg text-white px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition flex items-center gap-2" data-i18n="rest.new">
+              ➕ Yeni Restoran
+            </button>
+          </div>
+          <div id="restaurantList" class="grid md:grid-cols-2 gap-6">
+            <!-- Filled dynamically -->
+          </div>
+        </section>
+
+        <!-- MENU EDITOR SECTION -->
+        <section id="section-menu-editor" class="content-section hidden">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h1 class="text-2xl font-bold" data-i18n="editor.title">Menü Düzenleyici</h1>
+              <p class="text-gray-500 text-sm" id="menuRestaurantName"></p>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="showAddCategoryModal()" class="bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition" data-i18n="editor.add_category">
+                📁 Kategori Ekle
+              </button>
+              <button onclick="showAddItemModal()" class="gradient-bg text-white px-4 py-2.5 rounded-xl font-medium hover:opacity-90 transition" data-i18n="editor.add_item">
+                ➕ Ürün Ekle
+              </button>
+            </div>
+          </div>
+          <div id="menuContent" class="space-y-6">
+            <!-- Filled dynamically -->
+          </div>
+        </section>
+
+        <!-- QR CODE SECTION -->
+        <section id="section-qr-code" class="content-section hidden">
+          <h1 class="text-2xl font-bold mb-6" data-i18n="qr.title">QR Kod</h1>
+          <div class="max-w-md mx-auto bg-white rounded-2xl p-8 text-center border border-gray-100">
+            <div id="qrCodeContainer" class="mb-6">
+              <p class="text-gray-500" data-i18n="qr.no_restaurant">Restoran seçilmedi</p>
+            </div>
+            <div id="qrMenuLink" class="mb-4"></div>
+            <button id="downloadQrBtn" onclick="downloadQR()" class="hidden gradient-bg text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition" data-i18n="qr.download">
+              ⬇️ QR Kodu İndir
+            </button>
+            <p class="text-sm text-gray-400 mt-4" data-i18n="qr.instructions">Bu QR kodu yazdırıp masalarınıza koyun.<br>Müşterileriniz tarayarak menünüzü görecek!</p>
+          </div>
+        </section>
+
+        <!-- ANALYTICS SECTION -->
+        <section id="section-analytics" class="content-section hidden">
+          <h1 class="text-2xl font-bold mb-6" data-i18n="analytics.title">Analitik</h1>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="analyticsCards">
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-sm text-gray-500 mb-1" data-i18n="analytics.today">Bugün</div>
+              <div class="text-3xl font-bold" id="analyticsToday">0</div>
+              <div class="text-xs text-gray-400" data-i18n="analytics.views">görüntülenme</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-sm text-gray-500 mb-1" data-i18n="analytics.this_week">Bu Hafta</div>
+              <div class="text-3xl font-bold" id="analyticsWeek">0</div>
+              <div class="text-xs text-gray-400" data-i18n="analytics.views">görüntülenme</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-sm text-gray-500 mb-1" data-i18n="analytics.this_month">Bu Ay</div>
+              <div class="text-3xl font-bold" id="analyticsMonth">0</div>
+              <div class="text-xs text-gray-400" data-i18n="analytics.views">görüntülenme</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100">
+              <div class="text-sm text-gray-500 mb-1" data-i18n="analytics.total">Toplam</div>
+              <div class="text-3xl font-bold" id="analyticsTotal">0</div>
+              <div class="text-xs text-gray-400" data-i18n="analytics.views">görüntülenme</div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-gray-100">
+            <h3 class="font-bold mb-4" data-i18n="analytics.last_30">Son 30 Gün</h3>
+            <div id="analyticsChart" class="h-48 flex items-stretch gap-px overflow-x-auto pb-1">
+              <!-- Simple bar chart -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Add Restaurant Modal -->
+  <div id="addRestaurantModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold" data-i18n="modal.add_restaurant">Yeni Restoran Ekle</h2>
+        <button onclick="closeModal('addRestaurantModal')" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <form onsubmit="handleAddRestaurant(event)">
+        <div class="space-y-4">
+          <!-- Logo/Avatar Upload -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Restoran Logosu / Avatarı</label>
+            <div class="flex items-center gap-4">
+              <div id="restLogoPreview" class="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-purple-400 transition" onclick="document.getElementById('restLogoInput').click()">
+                🍽️
+              </div>
+              <div class="flex-1">
+                <input type="file" id="restLogoInput" accept="image/*" class="hidden" onchange="previewRestLogo(this)">
+                <button type="button" onclick="document.getElementById('restLogoInput').click()" class="px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-100 transition">
+                  📷 Resim Seç
+                </button>
+                <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP - Maks 5MB</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.restaurant_name">Restoran Adı *</label>
+            <input type="text" id="restName" required class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Lezzet Durağı" data-i18n-placeholder="modal.restaurant_name_ph">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.description">Açıklama</label>
+            <textarea id="restDesc" rows="2" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Kısa bir açıklama..." data-i18n-placeholder="modal.description_ph"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.address">Adres</label>
+            <input type="text" id="restAddress" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Tam adres" data-i18n-placeholder="modal.address_ph">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.phone">Telefon</label>
+            <input type="tel" id="restPhone" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="0555 123 4567" data-i18n-placeholder="modal.phone_ph">
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.primary_color">Ana Renk</label>
+              <input type="color" id="restPrimary" value="#e63946" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.secondary_color">İkincil Renk</label>
+              <input type="color" id="restSecondary" value="#1d3557" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.bg_color">Arkaplan</label>
+              <input type="color" id="restBg" value="#f1faee" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Hazır Renk Paletleri -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">🎨 Hazır Renk Paletleri</label>
+            <p class="text-xs text-gray-400 mb-3">Restoran türünüze uygun psikolojik renk paletlerinden birini seçin</p>
+            <div id="colorPalettes" class="grid grid-cols-1 gap-2.5">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition mt-6" data-i18n="modal.create_restaurant">
+          Restoran Oluştur
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Category Modal -->
+  <div id="addCategoryModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold" data-i18n="modal.add_category_title">Kategori Ekle</h2>
+        <button onclick="closeModal('addCategoryModal')" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <form onsubmit="handleAddCategory(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.category_name">Kategori Adı *</label>
+            <input type="text" id="catName" required class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="🍖 Ana Yemekler" data-i18n-placeholder="modal.category_name_ph">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.description">Açıklama</label>
+            <input type="text" id="catDesc" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Kategorinin kısa açıklaması" data-i18n-placeholder="modal.category_desc_ph">
+          </div>
+        </div>
+        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition mt-6" data-i18n="modal.add_category_btn">
+          Kategori Ekle
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Menu Item Modal -->
+  <div id="addItemModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold" data-i18n="modal.add_item_title">Menü Öğesi Ekle</h2>
+        <button onclick="closeModal('addItemModal')" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <form onsubmit="handleAddItem(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.category_select">Kategori *</label>
+            <select id="itemCategory" required class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="" data-i18n="modal.category_select_ph">Kategori seçin</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.item_name">Ürün Adı *</label>
+            <input type="text" id="itemName" required class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Izgara Köfte" data-i18n-placeholder="modal.item_name_ph">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.description">Açıklama</label>
+            <textarea id="itemDesc" rows="2" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ürünün kısa açıklaması" data-i18n-placeholder="modal.item_desc_ph"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.price">Fiyat (₺) *</label>
+              <input type="number" id="itemPrice" required step="0.01" min="0" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="185" data-i18n-placeholder="modal.price_ph">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="modal.image_url">Görsel URL</label>
+              <input type="url" id="itemImage" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="https://...">
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="itemPopular" class="w-4 h-4 text-purple-500 rounded">
+              <span class="text-sm text-gray-700" data-i18n="modal.popular_item">⭐ Popüler Ürün</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="itemAvailable" checked class="w-4 h-4 text-purple-500 rounded">
+              <span class="text-sm text-gray-700" data-i18n="modal.available">✅ Mevcut</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition mt-6" data-i18n="modal.add_item_btn">
+          Ürün Ekle
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[100] space-y-2"></div>
+
+  <!-- Edit Restaurant Modal -->
+  <div id="editRestaurantModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">⚙️ Restoran Ayarları</h2>
+        <button onclick="closeModal('editRestaurantModal')" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <form onsubmit="handleEditRestaurant(event)">
+        <div class="space-y-4">
+          <!-- Logo -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Restoran Logosu / Avatarı</label>
+            <div class="flex items-center gap-4">
+              <div id="editLogoPreview" class="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-purple-400 transition" onclick="document.getElementById('editLogoInput').click()">
+                🍽️
+              </div>
+              <div class="flex-1">
+                <input type="file" id="editLogoInput" accept="image/*" class="hidden" onchange="previewEditLogo(this)">
+                <div class="flex gap-2">
+                  <button type="button" onclick="document.getElementById('editLogoInput').click()" class="px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-100 transition">
+                    📷 Resim Seç
+                  </button>
+                  <button type="button" onclick="removeEditLogo()" id="editLogoRemoveBtn" class="hidden px-4 py-2 bg-red-50 text-red-500 rounded-xl text-sm font-medium hover:bg-red-100 transition">
+                    🗑️ Kaldır
+                  </button>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP - Maks 5MB</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Restoran Adı *</label>
+            <input type="text" id="editRestName" required class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+            <textarea id="editRestDesc" rows="2" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Adres</label>
+            <input type="text" id="editRestAddress" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+            <input type="tel" id="editRestPhone" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Para Birimi</label>
+            <input type="text" id="editRestCurrency" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500" placeholder="₺">
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Ana Renk</label>
+              <input type="color" id="editRestPrimary" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">İkincil Renk</label>
+              <input type="color" id="editRestSecondary" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Arkaplan</label>
+              <input type="color" id="editRestBg" class="w-full h-10 rounded-xl cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Renk Önizleme -->
+          <div id="editColorPreview" class="rounded-xl p-4 border border-gray-200 transition-all">
+            <div class="flex items-center gap-3 mb-2">
+              <div id="editPreviewLogo" class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center text-xl border border-white/30">🍽️</div>
+              <div>
+                <div id="editPreviewName" class="font-bold text-sm">Restoran Adı</div>
+                <div id="editPreviewDesc" class="text-xs opacity-70">Açıklama</div>
+              </div>
+            </div>
+            <div id="editPreviewCard" class="rounded-lg p-3 mt-2">
+              <div class="text-sm font-medium">Örnek Ürün</div>
+              <div class="text-xs opacity-60 mt-0.5">Lezzetli bir açıklama</div>
+              <div id="editPreviewPrice" class="text-sm font-bold mt-1">₺120</div>
+            </div>
+          </div>
+
+          <!-- Hazır Renk Paletleri -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">🎨 Hazır Renk Paletleri</label>
+            <p class="text-xs text-gray-400 mb-3">Bir palete tıklayarak renkleri anında değiştirebilirsiniz</p>
+            <div id="editColorPalettes" class="grid grid-cols-1 gap-2.5">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition mt-6">
+          💾 Kaydet
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tadında Menu - Restoranınız İçin Dijital Menü Sistemi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .float-animation { animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .blob { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-2">
+          <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+            <span class="text-xl">🍽️</span>
+          </div>
+          <span class="text-2xl font-bold">Tadında<span class="gradient-text">Menu</span></span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#features" class="text-gray-600 hover:text-gray-900 transition" data-i18n="nav.features">Özellikler</a>
+          <a href="#pricing" class="text-gray-600 hover:text-gray-900 transition" data-i18n="nav.pricing">Fiyatlar</a>
+          <a href="#faq" class="text-gray-600 hover:text-gray-900 transition" data-i18n="nav.faq">SSS</a>
+          <a href="/admin.html" class="text-purple-600 font-medium hover:text-purple-700 transition" data-i18n="nav.login">Giriş Yap</a>
+          <a href="/admin.html#register" class="gradient-bg text-white px-5 py-2 rounded-full font-medium hover:opacity-90 transition" data-i18n="nav.start_free">Ücretsiz Başla</a>
+          <button onclick="openLanguagePicker(this)" class="ml-2 px-3 py-1.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-100 transition">
+            🌐 <span class="lang-toggle-label">TR</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 md:hidden">
+          <button onclick="openLanguagePicker(this)" class="px-2.5 py-1 border border-gray-300 rounded-full text-xs font-medium">
+            🌐 <span class="lang-toggle-label">TR</span>
+          </button>
+          <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden pb-4">
+        <a href="#features" class="block py-2 text-gray-600" data-i18n="nav.features">Özellikler</a>
+        <a href="#pricing" class="block py-2 text-gray-600" data-i18n="nav.pricing">Fiyatlar</a>
+        <a href="/admin.html" class="block py-2 text-purple-600 font-medium" data-i18n="nav.login">Giriş Yap</a>
+        <a href="/admin.html#register" class="block mt-2 gradient-bg text-white px-5 py-2 rounded-full font-medium text-center" data-i18n="nav.start_free">Ücretsiz Başla</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 px-4 overflow-hidden">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-block px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-6" data-i18n="hero.badge">🚀 Türkiye'nin #1 Dijital Menü Platformu</div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
+          <span data-i18n="hero.title_1">Restoranınıza</span><br>
+          <span class="gradient-text" data-i18n="hero.title_2">Dijital Menü</span><br>
+          <span data-i18n="hero.title_3">Kazandırın</span>
+        </h1>
+        <p class="text-xl text-gray-500 mb-8 max-w-xl" data-i18n="hero.subtitle">QR kod ile müşterileriniz telefonlarından menünüzü görsün. Basılı menü maliyetinden kurtulun, menünüzü anında güncelleyin.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="/admin.html#register" class="gradient-bg text-white px-8 py-4 rounded-full text-lg font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/30 text-center" data-i18n="hero.cta_free">Ücretsiz Deneyin →</a>
+          <a href="/m/demo" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-full text-lg font-medium hover:bg-gray-200 transition text-center" data-i18n="hero.cta_demo">Demo Menüyü Gör</a>
+        </div>
+        <div class="flex items-center gap-6 mt-8 justify-center lg:justify-start">
+          <div class="flex -space-x-2">
+            <div class="w-8 h-8 rounded-full bg-purple-400 border-2 border-white flex items-center justify-center text-xs text-white">A</div>
+            <div class="w-8 h-8 rounded-full bg-blue-400 border-2 border-white flex items-center justify-center text-xs text-white">B</div>
+            <div class="w-8 h-8 rounded-full bg-pink-400 border-2 border-white flex items-center justify-center text-xs text-white">C</div>
+            <div class="w-8 h-8 rounded-full bg-green-400 border-2 border-white flex items-center justify-center text-xs text-white">D</div>
+          </div>
+          <div class="text-sm text-gray-500"><span class="font-semibold text-gray-700">500+</span> <span data-i18n="hero.social_proof">restoran kullanıyor</span></div>
+          <div class="flex items-center text-yellow-500">★★★★★ <span class="text-sm text-gray-500 ml-1">4.9/5</span></div>
+        </div>
+      </div>
+      <div class="flex-1 relative">
+        <div class="w-72 h-72 bg-purple-200 blob absolute -top-8 -right-8 opacity-30 float-animation"></div>
+        <div class="w-48 h-48 bg-blue-200 blob absolute -bottom-4 -left-4 opacity-30 float-animation" style="animation-delay: -3s;"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl p-6 max-w-sm mx-auto border border-gray-100">
+          <div class="bg-gray-900 rounded-2xl p-4 text-white">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-bold text-lg">🍽️ Lezzet Durağı</span>
+              <span class="text-xs bg-green-500 px-2 py-0.5 rounded-full" data-i18n="hero.open">Açık</span>
+            </div>
+            <div class="space-y-3">
+              <div class="bg-white/10 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center text-2xl">🍖</div>
+                <div class="flex-1"><div class="font-medium">Izgara Köfte</div><div class="text-xs text-gray-300">Pilav ve sebze ile</div></div>
+                <div class="font-bold text-green-400">₺185</div>
+              </div>
+              <div class="bg-white/10 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-12 h-12 bg-red-400 rounded-lg flex items-center justify-center text-2xl">🍕</div>
+                <div class="flex-1"><div class="font-medium">Karışık Pizza</div><div class="text-xs text-gray-300">Taş fırında</div></div>
+                <div class="font-bold text-green-400">₺165</div>
+              </div>
+              <div class="bg-white/10 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center text-2xl">🍰</div>
+                <div class="flex-1"><div class="font-medium">Künefe</div><div class="text-xs text-gray-300">Antep fıstığı ile</div></div>
+                <div class="font-bold text-green-400">₺95</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            <a href="/m/demo" class="block">
+              <img src="/api/public/demo-qr" alt="Demo Menü QR Kodu" class="w-24 h-24 mx-auto rounded-xl bg-gray-100">
+              <p class="text-xs text-gray-400 mt-1" data-i18n="hero.qr_text">QR Kodu Tara → Demo Menü</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="py-12 gradient-bg">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+      <div><div class="text-3xl md:text-4xl font-black">500+</div><div class="text-purple-200 text-sm mt-1" data-i18n="stats.restaurants">Aktif Restoran</div></div>
+      <div><div class="text-3xl md:text-4xl font-black">1M+</div><div class="text-purple-200 text-sm mt-1" data-i18n="stats.views">Menü Görüntülenme</div></div>
+      <div><div class="text-3xl md:text-4xl font-black">%80</div><div class="text-purple-200 text-sm mt-1" data-i18n="stats.savings">Maliyet Tasarrufu</div></div>
+      <div><div class="text-3xl md:text-4xl font-black">30sn</div><div class="text-purple-200 text-sm mt-1" data-i18n="stats.setup">Kurulum Süresi</div></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black mb-4"><span data-i18n="features.title">Neden</span> <span class="gradient-text">Tadında Menu</span>?</h2>
+        <p class="text-gray-500 text-lg max-w-2xl mx-auto" data-i18n="features.subtitle">Restoranınızı dijital dünyaya taşıyın, müşteri memnuniyetini artırın</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-2xl mb-5">📱</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.qr_title">QR Kod ile Anında Erişim</h3>
+          <p class="text-gray-500" data-i18n="features.qr_desc">Müşterileriniz telefonlarıyla QR kodu tarayarak saniyeler içinde menünüze ulaşır.</p>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl mb-5">✏️</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.update_title">Anlık Güncelleme</h3>
+          <p class="text-gray-500" data-i18n="features.update_desc">Fiyat değişikliği veya yeni ürün ekleme? Anında güncelleyin, menü basım maliyeti yok.</p>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-2xl mb-5">📊</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.analytics_title">Detaylı Analitik</h3>
+          <p class="text-gray-500" data-i18n="features.analytics_desc">Menünüz kaç kez görüntülendi? Hangi saatlerde pik yapıyor? Tüm verileri görün.</p>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-2xl mb-5">🎨</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.design_title">Özelleştirilebilir Tasarım</h3>
+          <p class="text-gray-500" data-i18n="features.design_desc">Markanıza uygun renkler, logo ve kapak fotoğrafı ile profesyonel menü tasarlayın.</p>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center text-2xl mb-5">⚡</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.speed_title">Süper Hızlı</h3>
+          <p class="text-gray-500" data-i18n="features.speed_desc">Menünüz milisaniyeler içinde yüklenir. Müşterileriniz beklemez.</p>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-2xl mb-5">🌍</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="features.responsive_title">Her Cihazda Çalışır</h3>
+          <p class="text-gray-500" data-i18n="features.responsive_desc">iPhone, Android, tablet... Tüm cihazlarda mükemmel görünüm.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black mb-4" data-i18n="how.title">Nasıl Çalışır?</h2>
+        <p class="text-gray-500 text-lg" data-i18n="how.subtitle">3 kolay adımda dijital menünüz hazır</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center text-3xl text-white font-black mx-auto mb-6">1</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="how.step1_title">Kayıt Olun</h3>
+          <p class="text-gray-500" data-i18n="how.step1_desc">Ücretsiz hesap oluşturun ve restoran bilgilerinizi girin.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center text-3xl text-white font-black mx-auto mb-6">2</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="how.step2_title">Menüyü Ekleyin</h3>
+          <p class="text-gray-500" data-i18n="how.step2_desc">Kategorileri ve ürünleri fotoğraflarıyla birlikte ekleyin.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center text-3xl text-white font-black mx-auto mb-6">3</div>
+          <h3 class="text-xl font-bold mb-3" data-i18n="how.step3_title">QR Kodu Paylaşın</h3>
+          <p class="text-gray-500" data-i18n="how.step3_desc">QR kodu masalara koyun, müşteriler tarayıp menüyü görsün!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="py-20 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black mb-4"><span data-i18n="pricing.title_1">Basit ve Şeffaf</span> <span class="gradient-text" data-i18n="pricing.title_2">Fiyatlandırma</span></h2>
+        <p class="text-gray-500 text-lg" data-i18n="pricing.subtitle">Her bütçeye uygun plan</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+          <div class="text-sm font-medium text-gray-500 mb-2" data-i18n="pricing.starter">BAŞLANGIÇ</div>
+          <div class="text-4xl font-black mb-1" data-i18n="pricing.free">Ücretsiz</div>
+          <div class="text-gray-400 mb-6" data-i18n="pricing.forever">Sonsuza kadar</div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.free_f1">1 Restoran</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.free_f2">30 Menü Öğesi</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.free_f3">QR Kod</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.free_f4">Mobil Uyumlu Menü</span></li>
+            <li class="flex items-center gap-2 text-gray-400"><span>✗</span> <span data-i18n="pricing.free_f5">Analitik Rapor</span></li>
+            <li class="flex items-center gap-2 text-gray-400"><span>✗</span> <span data-i18n="pricing.free_f6">Özel Renkler</span></li>
+          </ul>
+          <a href="/admin.html#register" class="block w-full text-center py-3 border-2 border-gray-200 rounded-full font-medium hover:border-purple-500 hover:text-purple-600 transition" data-i18n="pricing.start_free">Ücretsiz Başla</a>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border-2 border-purple-500 relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-1 rounded-full" data-i18n="pricing.most_popular">EN POPÜLER</div>
+          <div class="text-sm font-medium text-purple-600 mb-2">PRO</div>
+          <div class="text-4xl font-black mb-1">₺149<span class="text-lg font-medium text-gray-400">/ay</span></div>
+          <div class="text-gray-400 mb-6" data-i18n="pricing.pro_yearly">Yıllık ödemede ₺99/ay</div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <strong>5</strong> <span data-i18n="pricing.pro_f1">Restoran</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <strong data-i18n="pricing.unlimited">Sınırsız</strong> <span data-i18n="pricing.pro_f2">Menü Öğesi</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.pro_f3">QR Kod</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.pro_f4">Detaylı Analitik</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.pro_f5">Özel Renkler & Logo</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.pro_f6">Öncelikli Destek</span></li>
+          </ul>
+          <a href="/admin.html#register" class="block w-full text-center py-3 gradient-bg text-white rounded-full font-medium hover:opacity-90 transition shadow-lg shadow-purple-500/30" data-i18n="pricing.go_pro">Pro'ya Geç →</a>
+        </div>
+        <div class="card-hover bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+          <div class="text-sm font-medium text-gray-500 mb-2" data-i18n="pricing.enterprise">KURUMSAL</div>
+          <div class="text-4xl font-black mb-1">₺399<span class="text-lg font-medium text-gray-400">/ay</span></div>
+          <div class="text-gray-400 mb-6" data-i18n="pricing.enterprise_sub">Restoran zincirleri için</div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <strong data-i18n="pricing.unlimited">Sınırsız</strong> <span data-i18n="pricing.ent_f1">Restoran</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <strong data-i18n="pricing.unlimited">Sınırsız</strong> <span data-i18n="pricing.ent_f2">Menü Öğesi</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.ent_f3">Tüm Pro Özellikler</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.ent_f4">API Erişimi</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.ent_f5">Özel Alan Adı</span></li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> <span data-i18n="pricing.ent_f6">7/24 Destek</span></li>
+          </ul>
+          <a href="/admin.html#register" class="block w-full text-center py-3 border-2 border-gray-200 rounded-full font-medium hover:border-purple-500 hover:text-purple-600 transition" data-i18n="pricing.contact">İletişime Geç</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black mb-4" data-i18n="faq.title">Sıkça Sorulan Sorular</h2>
+      </div>
+      <div class="space-y-4">
+        <details class="bg-gray-50 rounded-2xl p-6 cursor-pointer group" open>
+          <summary class="font-semibold text-lg flex justify-between items-center"><span data-i18n="faq.q1">Kurulumu ne kadar sürer?</span><span class="text-purple-500 group-open:rotate-180 transition-transform">▼</span></summary>
+          <p class="mt-3 text-gray-500" data-i18n="faq.a1">Kayıt olduktan sonra 5 dakika içinde ilk dijital menünüz hazır! Kolay arayüzümüz sayesinde teknik bilgi gerektirmez.</p>
+        </details>
+        <details class="bg-gray-50 rounded-2xl p-6 cursor-pointer group">
+          <summary class="font-semibold text-lg flex justify-between items-center"><span data-i18n="faq.q2">Müşterilerimin uygulama indirmesi gerekiyor mu?</span><span class="text-purple-500 group-open:rotate-180 transition-transform">▼</span></summary>
+          <p class="mt-3 text-gray-500" data-i18n="faq.a2">Hayır! Müşterileriniz QR kodu taradığında menü doğrudan tarayıcıda açılır. Herhangi bir uygulama indirmeye gerek yoktur.</p>
+        </details>
+        <details class="bg-gray-50 rounded-2xl p-6 cursor-pointer group">
+          <summary class="font-semibold text-lg flex justify-between items-center"><span data-i18n="faq.q3">Menümü ne sıklıkla güncelleyebilirim?</span><span class="text-purple-500 group-open:rotate-180 transition-transform">▼</span></summary>
+          <p class="mt-3 text-gray-500" data-i18n="faq.a3">Sınırsız! İstediğiniz zaman fiyat değiştirebilir, yeni ürün ekleyebilir veya mevcut ürünleri düzenleyebilirsiniz. Değişiklikler anında yansır.</p>
+        </details>
+        <details class="bg-gray-50 rounded-2xl p-6 cursor-pointer group">
+          <summary class="font-semibold text-lg flex justify-between items-center"><span data-i18n="faq.q4">QR kodu değişir mi?</span><span class="text-purple-500 group-open:rotate-180 transition-transform">▼</span></summary>
+          <p class="mt-3 text-gray-500" data-i18n="faq.a4">Hayır! QR kodunuz sabit kalır. Menünüzde değişiklik yaptığınızda QR kodu aynı kalır, sadece içerik güncellenir.</p>
+        </details>
+        <details class="bg-gray-50 rounded-2xl p-6 cursor-pointer group">
+          <summary class="font-semibold text-lg flex justify-between items-center"><span data-i18n="faq.q5">İnternet yoksa menü açılır mı?</span><span class="text-purple-500 group-open:rotate-180 transition-transform">▼</span></summary>
+          <p class="mt-3 text-gray-500" data-i18n="faq.a5">Menüyü görüntülemek için internet bağlantısı gereklidir. Ancak restoranınızın WiFi'si olduğu sürece sorun yaşanmaz.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 px-4 gradient-bg">
+    <div class="max-w-4xl mx-auto text-center text-white">
+      <h2 class="text-3xl md:text-4xl font-black mb-4"><span data-i18n="cta.title_1">Dijital Menüye Geçmek İçin</span><br><span data-i18n="cta.title_2">Doğru Zaman!</span></h2>
+      <p class="text-xl text-purple-200 mb-8" data-i18n="cta.subtitle">Hemen ücretsiz hesap oluşturun, 5 dakikada ilk menünüz hazır olsun.</p>
+      <a href="/admin.html#register" class="inline-block bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition shadow-lg" data-i18n="cta.button">Ücretsiz Hesap Oluştur →</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-12 px-4">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center space-x-2 mb-4">
+          <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center"><span class="text-xl">🍽️</span></div>
+          <span class="text-2xl font-bold text-white">Tadında<span class="gradient-text">Menu</span></span>
+        </div>
+        <p class="text-sm" data-i18n="footer.tagline">Restoranlar için modern dijital menü çözümü.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-4" data-i18n="footer.product">Ürün</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#features" class="hover:text-white transition" data-i18n="footer.features">Özellikler</a></li>
+          <li><a href="#pricing" class="hover:text-white transition" data-i18n="footer.pricing_link">Fiyatlandırma</a></li>
+          <li><a href="#faq" class="hover:text-white transition" data-i18n="footer.faq_link">SSS</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-4" data-i18n="footer.company">Şirket</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition" data-i18n="footer.about">Hakkımızda</a></li>
+          <li><a href="#" class="hover:text-white transition" data-i18n="footer.contact_link">İletişim</a></li>
+          <li><a href="#" class="hover:text-white transition" data-i18n="footer.blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-4" data-i18n="footer.contact">İletişim</h4>
+        <ul class="space-y-2 text-sm">
+          <li>📧 info@tadindamenu.com</li>
+          <li>📱 0850 555 1234</li>
+          <li>📍 İstanbul, Türkiye</li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-gray-800 text-center text-sm" data-i18n="footer.copyright">© 2026 Tadında Menu. Tüm hakları saklıdır.</div>
+  </footer>
+
+  <script src="/js/i18n.js"></script>
+</body>
+</html>
