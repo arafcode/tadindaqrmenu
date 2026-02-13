@@ -1,6 +1,6 @@
 # 🚀 Tadında Menu - Dijital Menü Sistemi
 
-Restoran ve kafeler için **QR kod tabanlı dijital menü sistemi**. SaaS modeli ile aylık tekrarlayan gelir elde edin.
+Restoran ve kafeler için **QR kod tabanlı dijital menü sistemi**. Müşterileriniz QR kodu tarayarak menünüze anında ulaşsın — kolay kurulum, çoklu dil desteği ve tamamen özelleştirilebilir.
 
 Görseller:
 <img width="1892" height="906" alt="Screenshot_1" src="https://github.com/user-attachments/assets/ace0ff6a-9f75-42ec-85b5-10f850f64c81" />
@@ -98,150 +98,103 @@ tadindamenu/
 
 ---
 
-# 💰 PARA KAZANMA REHBERİ
+## 🛠️ Kullanılan Teknolojiler
 
-## 🎯 İş Modeli: SaaS (Hizmet Olarak Yazılım)
-
-### Fiyatlandırma Stratejisi
-
-| Plan | Aylık Fiyat | Özellikler |
-|------|-------------|------------|
-| **Ücretsiz** | ₺0 | 1 restoran, 30 ürün, temel özellikler |
-| **Pro** | ₺149/ay | 5 restoran, sınırsız ürün, analitik, özel renkler |
-| **Kurumsal** | ₺399/ay | Sınırsız restoran, API, özel domain, 7/24 destek |
-
-### Gelir Projeksiyonu
-
-| Müşteri Sayısı | Aylık Gelir | Yıllık Gelir |
-|-----------------|-------------|--------------|
-| 10 Pro müşteri | ₺1.490 | ₺17.880 |
-| 30 Pro müşteri | ₺4.470 | ₺53.640 |
-| 50 Pro + 5 Kurumsal | ₺9.445 | ₺113.340 |
-| 100 Pro + 10 Kurumsal | ₺18.890 | ₺226.680 |
+| Teknoloji | Kullanım Alanı |
+|-----------|---------------|
+| **Node.js + Express** | Backend sunucu ve REST API |
+| **MySQL 9** | Veritabanı yönetimi |
+| **Docker** | Veritabanı containerization |
+| **JWT** | Kimlik doğrulama ve yetkilendirme |
+| **HTML/CSS/JS** | Frontend arayüzler |
+| **QR Code API** | Otomatik QR kod oluşturma |
+| **Multer** | Resim yükleme işlemleri |
+| **bcrypt** | Şifre hashleme |
 
 ---
 
-## 📋 ADIM ADIM PARA KAZANMA PLANI
+## 📡 API Endpoints
 
-### ADIM 1: Projeyi Yayına Al (0₺ Maliyet!)
+### Kimlik Doğrulama
+| Metot | Endpoint | Açıklama |
+|-------|----------|----------|
+| POST | `/api/register` | Yeni kullanıcı kaydı |
+| POST | `/api/login` | Kullanıcı girişi |
 
-#### Seçenek A: Railway.app (ÖNERİLEN)
-1. https://railway.app adresine git
-2. GitHub hesabınla giriş yap
-3. "New Project" → "Deploy from GitHub Repo"
-4. Bu projeyi GitHub'a yükle ve Railway'e bağla
-5. Environment variables ekle (PORT, JWT_SECRET, BASE_URL)
-6. **Ücretsiz plan: 500 saat/ay** (yeterli!)
+### Restoran Yönetimi
+| Metot | Endpoint | Açıklama |
+|-------|----------|----------|
+| GET | `/api/restaurants` | Kullanıcının restoranlarını listele |
+| POST | `/api/restaurants` | Yeni restoran oluştur |
+| PUT | `/api/restaurants/:id` | Restoran bilgilerini güncelle |
+| DELETE | `/api/restaurants/:id` | Restoranı sil |
 
-#### Seçenek B: Render.com
-1. https://render.com adresine git
-2. "New Web Service" → GitHub repo'nu bağla
-3. Build Command: `npm install`
-4. Start Command: `npm start`
-5. **Ücretsiz plan mevcut!**
+### Kategori Yönetimi
+| Metot | Endpoint | Açıklama |
+|-------|----------|----------|
+| GET | `/api/restaurants/:id/categories` | Kategorileri listele |
+| POST | `/api/categories` | Yeni kategori ekle |
+| PUT | `/api/categories/:id` | Kategori güncelle |
+| DELETE | `/api/categories/:id` | Kategori sil |
 
-#### Seçenek C: VPS (Daha Profesyonel)
-1. Hetzner/DigitalOcean'dan $5/ay VPS al
-2. Domain al (tadindamenu.com gibi) - ~100₺/yıl
-3. Nginx + Let's Encrypt SSL kur
-4. PM2 ile uygulamayı ayakta tut
+### Menü Öğeleri
+| Metot | Endpoint | Açıklama |
+|-------|----------|----------|
+| GET | `/api/categories/:id/items` | Kategorideki ürünleri listele |
+| POST | `/api/items` | Yeni ürün ekle |
+| PUT | `/api/items/:id` | Ürün güncelle |
+| DELETE | `/api/items/:id` | Ürün sil |
 
-### ADIM 2: Domain Al
-- **Önerilen:** tadindamenu.com, dijitalmenu.com.tr gibi
-- Namecheap veya GoDaddy'den al (~100-200₺/yıl)
-
-### ADIM 3: Ödeme Sistemi Entegre Et
-- **iyzico** (Türkiye için en kolay): https://www.iyzico.com
-- **Stripe** (uluslararası): https://stripe.com
-- Aylık abonelik modeli kur
-
----
-
-## 🏃 MÜŞTERİ BULMA STRATEJİLERİ
-
-### 1. 🚶 Kapı Kapı Satış (EN ETKİLİ!)
-**Hedef:** Çevrenizdeki restoran ve kafeler
-
-**Yapmanız gereken:**
-1. Tabletten/telefondan demo menüyü gösterin
-2. "Ücretsiz deneme" teklif edin
-3. 5 dakikada restoranın menüsünü sisteme girin
-4. QR kodu yazdırıp masalara koyun
-5. 1 hafta ücretsiz kullandırın
-6. Sonra aylık abonelik teklif edin
-
-**Konuşma senaryosu:**
-> "Merhaba, ben [adınız]. Restoranınız için dijital menü sistemi sunuyorum. 
-> Müşterileriniz QR kodu tarayıp menünüzü telefondan görebilir. 
-> Basılı menü maliyetinden kurtulursunuz, fiyat değişikliklerini anında yaparsınız.
-> İlk ay tamamen ücretsiz deneyin, beğenmezseniz hiçbir ücret ödemezsiniz."
-
-### 2. 📱 Sosyal Medya Pazarlaması
-- Instagram'da restoran sahiplerine DM atın
-- "Dijital menü" konusunda bilgilendirici içerikler paylaşın
-- Öncesi/sonrası görselleri oluşturun
-- Reels/TikTok'ta demo videoları çekin
-
-### 3. 🌐 Google My Business
-- "dijital menü" aramasında çıkmak için SEO yapın
-- Google Ads ile "restoran menü" arayanları hedefleyin
-
-### 4. 🤝 İş Ortaklıkları
-- Restoran malzemeleri satan firmalarla anlaşın
-- Muhasebecilerden referans alın
-- Restoran dernekleri ile iletişime geçin
-
-### 5. 📍 Yerel Pazarlama
-- Restoran bölgelerinde broşür dağıtın
-- Ramazan/tatil sezonlarında özel kampanyalar yapın
-- Yeni açılan restoranlara ilk gün gidin
+### Herkese Açık (Public)
+| Metot | Endpoint | Açıklama |
+|-------|----------|----------|
+| GET | `/api/menu/:slug` | Restoran menüsünü görüntüle |
+| POST | `/api/menu/:slug/view` | Görüntülenme sayacını artır |
 
 ---
 
-## 💡 GELİR ARTIRMA TAKTİKLERİ
+## 🌍 Çoklu Dil Desteği
 
-### Ek Gelir Kaynakları
+Sistem şu anda **4 dil** desteklemektedir:
 
-1. **Kurulum Ücreti:** Menü fotoğrafı çekme + sisteme girme: ₺500-1000
-2. **QR Kod Baskısı:** Masalar için akrilik QR standı satışı: ₺50-100/adet
-3. **Menü Tasarımı:** Özel renk/logo tasarımı: ₺300-500
-4. **Yıllık Plan İndirimi:** Yıllık ödeme yapana %30 indirim (peşin para)
-5. **White Label:** Diğer girişimcilere alt lisans satışı
+| Dil | Kod | Durum |
+|-----|-----|-------|
+| 🇹🇷 Türkçe | `tr` | ✅ Tamamlandı |
+| 🇬🇧 İngilizce | `en` | ✅ Tamamlandı |
+| 🇩🇪 Almanca | `de` | ✅ Tamamlandı |
+| 🇸🇦 Arapça | `ar` | ✅ Tamamlandı (RTL destekli) |
 
-### Müşteri Tutma Stratejileri
-- İlk ay ücretsiz
-- QR kod görüntülenme raporları her hafta email ile gönderin
-- Sezon menüleri için hatırlatma yapın
-- Sadakat programı: 1 yıl kullanana 1 ay hediye
+Dil dosyaları `public/js/i18n.js` içinde yönetilmektedir. Yeni dil eklemek için bu dosyaya ilgili çeviri anahtarlarını eklemeniz yeterlidir.
 
 ---
 
-## 🛠️ PROJEYİ GELİŞTİRME FİKİRLERİ
+## 🔐 Kullanıcı Rolleri
 
-### Kısa Vadeli (1-2 Hafta)
-- [ ] Ödeme sistemi entegrasyonu (iyzico/Stripe)
-- [ ] Email doğrulama
-- [ ] Şifre sıfırlama
-- [ ] Resim yükleme (multer eklenerek)
-
-### Orta Vadeli (1-2 Ay)
-- [ ] Çoklu dil desteği (İngilizce, Arapça, Almanca)
-- [ ] WhatsApp sipariş butonu
-- [ ] Google Maps entegrasyonu
-- [ ] Müşteri yorum sistemi
-- [ ] Push bildirim
-
-### Uzun Vadeli (3-6 Ay)
-- [ ] Online sipariş + ödeme
-- [ ] Masa rezervasyonu
-- [ ] Stok yönetimi
-- [ ] Çoklu şube yönetimi
-- [ ] Mobil uygulama (React Native)
-- [ ] AI ile menü optimizasyonu
+| Rol | Yetkiler |
+|-----|----------|
+| **Kullanıcı** | Kendi restoranlarını ve menülerini yönetir |
+| **Süper Admin** | Tüm kullanıcıları ve restoranları yönetir, sistem ayarları |
 
 ---
 
-## 🔧 Teknik Deployment Notları
+## 🚀 Deploy (Yayına Alma)
+
+### Seçenek A: Railway.app
+1. [railway.app](https://railway.app) adresine git
+2. GitHub ile giriş yap → "New Project" → "Deploy from GitHub Repo"
+3. Projeyi bağla ve environment variables ekle
+4. MySQL eklentisini projeye ekle
+
+### Seçenek B: Render.com
+1. [render.com](https://render.com) adresine git
+2. "New Web Service" → GitHub reposunu bağla
+3. Build Command: `npm install` / Start Command: `npm start`
+
+### Seçenek C: VPS ile Kurulum
+1. Hetzner, DigitalOcean veya benzeri bir sağlayıcıdan sunucu al
+2. Domain bağla ve SSL sertifikası kur (Let's Encrypt)
+3. PM2 ile uygulamayı ayakta tut
+4. Nginx ile reverse proxy ayarla
 
 ### Environment Variables (.env)
 ```
@@ -249,12 +202,12 @@ tadindamenu/
 cp .env.example .env
 ```
 
-> ⚠️ **Önemli:** `.env` dosyasını asla GitHub'a push etmeyin! JWT_SECRET ve şifreleri güçlü değerlerle değiştirin.
+> ⚠️ **Önemli:** `.env` dosyasını asla GitHub'a push etmeyin! `JWT_SECRET` ve şifreleri güçlü değerlerle değiştirin.
 
 ### PM2 ile Production
 ```bash
 npm install -g pm2
-pm2 start server.js --name qr-menu
+pm2 start server.js --name tadinda-menu
 pm2 save
 pm2 startup
 ```
@@ -263,7 +216,7 @@ pm2 startup
 ```nginx
 server {
     listen 80;
-    server_name tadindamenu.com;
+    server_name yourdomain.com;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -278,28 +231,60 @@ server {
 
 ---
 
-## 📊 Maliyet Analizi
+## 💾 Veritabanı Yedekleme & Geri Yükleme
 
-| Kalem | Aylık Maliyet |
-|-------|---------------|
-| Hosting (Railway/Render) | ₺0 (ücretsiz plan) |
-| Domain | ~₺10/ay |
-| SSL | ₺0 (Let's Encrypt) |
-| **TOPLAM** | **~₺10/ay** |
+```bash
+# Yedekleme
+npm run backup
 
-**Kâr marjı: %95+** (1 Pro müşteri bile maliyeti karşılar!)
+# Geri yükleme
+npm run restore
+```
+
+Yedek dosyaları `backups/` klasörüne kaydedilir.
 
 ---
 
-## 🎉 SONUÇ
+## 🗺️ Yol Haritası (Roadmap)
 
-Bu proje ile:
-1. **Sıfır sermaye** ile başlayabilirsiniz
-2. **Tekrarlayan gelir** elde edersiniz (her ay para gelir)
-3. **Ölçeklenebilir**: 1 müşteriye harcadığınız efor ile 1000 müşteriye hizmet verebilirsiniz
-4. Her restoran/kafe potansiyel müşterinizdir
-5. Pandemi sonrası dijital menü artık standart hale geldi
+### Kısa Vadeli
+- [ ] Email doğrulama sistemi
+- [ ] Şifre sıfırlama
+- [ ] Ödeme sistemi entegrasyonu (iyzico/Stripe)
 
-**İlk hedefiniz:** 10 müşteri bulmak → Aylık ₺1.490 gelir 🎯
+### Orta Vadeli
+- [ ] WhatsApp sipariş butonu
+- [ ] Google Maps entegrasyonu
+- [ ] Müşteri yorum sistemi
+- [ ] Push bildirimler
 
-Başarılar! 🚀
+### Uzun Vadeli
+- [ ] Online sipariş + ödeme
+- [ ] Masa rezervasyonu
+- [ ] Stok yönetimi
+- [ ] Çoklu şube yönetimi
+- [ ] Mobil uygulama (React Native)
+
+---
+
+## 🤝 Katkıda Bulunma
+
+1. Bu repoyu **fork** edin
+2. Yeni bir **branch** oluşturun (`git checkout -b feature/yeni-ozellik`)
+3. Değişikliklerinizi **commit** edin (`git commit -m 'Yeni özellik eklendi'`)
+4. Branch'inizi **push** edin (`git push origin feature/yeni-ozellik`)
+5. Bir **Pull Request** açın
+
+---
+
+## 📄 Lisans
+
+Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+
+---
+
+## 📬 İletişim
+
+Sorularınız veya önerileriniz için **Issues** bölümünü kullanabilirsiniz.
+
+⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!
