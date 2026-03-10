@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -247,6 +247,50 @@ app.delete('/api/restaurants/:restaurantId/logo', auth, ownsRestaurant, async (r
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: 'Logo silinirken hata oluştu' });
+  }
+});
+
+// Restoran arkaplan görseli yükleme
+app.post('/api/restaurants/:restaurantId/upload-bg', auth, ownsRestaurant, (req, res) => {
+  upload.single('bg_image')(req, res, async (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: 'Dosya boyutu en fazla 5MB olabilir' });
+      }
+      return res.status(400).json({ error: err.message || 'Yükleme hatası' });
+    }
+    if (!req.file) return res.status(400).json({ error: 'Dosya seçilmedi' });
+
+    try {
+      const oldRest = await db.getRestaurantById(req.params.restaurantId);
+      if (oldRest && oldRest.bg_image_url) {
+        const oldPath = path.join(__dirname, 'public', oldRest.bg_image_url);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+
+      const bgUrl = `/uploads/${req.file.filename}`;
+      await db.updateRestaurant(req.params.restaurantId, { bg_image_url: bgUrl });
+      const updated = await db.getRestaurantById(req.params.restaurantId);
+      res.json({ success: true, bg_image_url: bgUrl, restaurant: updated });
+    } catch (e) {
+      console.error('BG upload error:', e);
+      res.status(500).json({ error: 'Arkaplan yüklenirken hata oluştu' });
+    }
+  });
+});
+
+// Restoran arkaplan görselini kaldır
+app.delete('/api/restaurants/:restaurantId/bg-image', auth, ownsRestaurant, async (req, res) => {
+  try {
+    const restaurant = await db.getRestaurantById(req.params.restaurantId);
+    if (restaurant && restaurant.bg_image_url) {
+      const oldPath = path.join(__dirname, 'public', restaurant.bg_image_url);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+    await db.updateRestaurant(req.params.restaurantId, { bg_image_url: '' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Arkaplan silinirken hata oluştu' });
   }
 });
 

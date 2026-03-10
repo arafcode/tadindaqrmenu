@@ -58,6 +58,7 @@ async function init() {
       primary_color VARCHAR(20) DEFAULT '#e63946',
       secondary_color VARCHAR(20) DEFAULT '#1d3557',
       bg_color VARCHAR(20) DEFAULT '#f1faee',
+      bg_image_url TEXT,
       currency VARCHAR(10) DEFAULT '₺',
       is_active TINYINT(1) DEFAULT 1,
       slug VARCHAR(255) UNIQUE NOT NULL,
@@ -203,7 +204,7 @@ async function getRestaurantBySlug(slug) {
 }
 
 async function updateRestaurant(id, data) {
-  const allowed = ['name', 'description', 'address', 'phone', 'logo_url', 'cover_url', 'primary_color', 'secondary_color', 'bg_color', 'currency', 'is_active'];
+  const allowed = ['name', 'description', 'address', 'phone', 'logo_url', 'cover_url', 'primary_color', 'secondary_color', 'bg_color', 'bg_image_url', 'currency', 'is_active'];
   const sets = []; const vals = [];
   for (const [key, value] of Object.entries(data)) {
     if (allowed.includes(key)) { sets.push(`\`${key}\` = ?`); vals.push(value); }

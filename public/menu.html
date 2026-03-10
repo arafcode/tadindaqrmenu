@@ -5,174 +5,246 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Menü</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 0; }
+    :root {
+      --primary: #7c3aed;
+      --bg-color: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --card-bg: rgba(255,255,255,0.92);
+      --card-border: rgba(0,0,0,0.06);
+    }
+
+    * { margin: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     
     ::-webkit-scrollbar { width: 0; height: 0; display: none; }
     html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-    
-    /* Glass */
-    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
-    .glass-dark { background: rgba(0,0,0,0.3); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
-    
-    /* Tabs */
-    .category-tab { scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+    .font-display { font-family: 'Playfair Display', serif; }
+
+    /* Background layer */
+    .menu-bg {
+      position: fixed; inset: 0; z-index: -1;
+      background-size: cover; background-position: center;
+    }
+    .menu-bg-overlay {
+      position: fixed; inset: 0; z-index: -1;
+    }
+
+    /* Glass morphism */
+    .glass { 
+      background: var(--card-bg); 
+      backdrop-filter: blur(20px) saturate(180%); 
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--card-border);
+    }
+
+    /* Category tabs */
+    .category-tab { 
+      scroll-snap-align: start; 
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1); 
+    }
     .category-tab:active { transform: scale(0.95); }
-    .category-tabs { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-    
-    /* Items */
-    .menu-item { 
-      animation: itemReveal 0.5s cubic-bezier(0.16,1,0.3,1) both;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    .category-tabs { 
+      scroll-snap-type: x mandatory; 
+      -webkit-overflow-scrolling: touch; 
     }
-    .menu-item:active { transform: scale(0.98); }
-    @keyframes itemReveal { 
-      from { opacity: 0; transform: translateY(16px); } 
-      to { opacity: 1; transform: translateY(0); } 
+
+    /* Food card animations */
+    .food-card {
+      animation: cardReveal 0.6s cubic-bezier(0.16,1,0.3,1) both;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .menu-item:nth-child(1) { animation-delay: 0s; }
-    .menu-item:nth-child(2) { animation-delay: 0.05s; }
-    .menu-item:nth-child(3) { animation-delay: 0.1s; }
-    .menu-item:nth-child(4) { animation-delay: 0.15s; }
-    .menu-item:nth-child(5) { animation-delay: 0.2s; }
-    
-    /* Popular */
-    .popular-card { transition: transform 0.2s ease; }
+    .food-card:hover { transform: translateY(-4px); }
+    .food-card:active { transform: scale(0.97); }
+    @keyframes cardReveal { 
+      from { opacity: 0; transform: translateY(24px) scale(0.96); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
+    }
+    .food-card:nth-child(1) { animation-delay: 0s; }
+    .food-card:nth-child(2) { animation-delay: 0.06s; }
+    .food-card:nth-child(3) { animation-delay: 0.12s; }
+    .food-card:nth-child(4) { animation-delay: 0.18s; }
+    .food-card:nth-child(5) { animation-delay: 0.24s; }
+    .food-card:nth-child(6) { animation-delay: 0.30s; }
+
+    /* Image */
+    .food-img { transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .food-card:hover .food-img { transform: scale(1.08); }
+
+    /* Hero header */
+    .hero-header {
+      animation: heroFadeIn 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-name {
+      animation: nameSlide 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+    }
+    @keyframes nameSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-detail {
+      animation: detailFade 0.6s ease 0.35s both;
+    }
+    @keyframes detailFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .hero-divider {
+      animation: dividerGrow 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s both;
+    }
+    @keyframes dividerGrow {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    /* Popular scroll */
+    .popular-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .popular-card { scroll-snap-align: start; transition: transform 0.3s ease; }
     .popular-card:active { transform: scale(0.96); }
-    
-    /* Cover gradient */
-    .cover-fade::after { 
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; 
-      background: linear-gradient(to top, var(--bg-color, #ffffff), transparent); 
-      pointer-events: none; 
-    }
-    
-    /* Image hover */
-    .item-img { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
-    .menu-item:hover .item-img { transform: scale(1.06); }
+
+    /* Price */
+    .price-tag { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
     
     /* Line clamp */
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    
-    /* Price */
-    .price-tag { letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-    
+
     /* Modal */
     #itemModal .modal-bg { transition: opacity 0.3s ease; }
     #itemModal .modal-sheet { transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); }
+
+    /* Masonry-like grid for food items */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .food-grid .food-card.full-width {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 380px) {
+      .food-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body class="min-h-screen antialiased">
 
   <!-- Loading -->
-  <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+  <div id="loading" class="fixed inset-0 flex items-center justify-center z-50" style="background:var(--bg-color, #fff)">
     <div class="text-center">
-      <div class="relative w-14 h-14 mx-auto mb-5">
+      <div class="relative w-16 h-16 mx-auto mb-6">
         <div class="absolute inset-0 rounded-full border-[3px] border-gray-100"></div>
         <div class="absolute inset-0 rounded-full border-[3px] border-transparent border-t-purple-600 animate-spin"></div>
         <div class="absolute inset-[6px] rounded-full border-[2px] border-transparent border-b-pink-500 animate-spin" style="animation-direction:reverse;animation-duration:0.8s"></div>
       </div>
-      <p class="text-gray-400 text-sm font-medium tracking-wide" data-i18n="menu.loading">Menü yükleniyor...</p>
+      <p class="text-gray-400 text-sm font-medium tracking-wider uppercase" data-i18n="menu.loading">Menü yükleniyor...</p>
     </div>
   </div>
 
   <!-- Error -->
   <div id="errorScreen" class="hidden fixed inset-0 flex items-center justify-center bg-white z-50">
     <div class="text-center px-8">
-      <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">😔</div>
-      <h2 class="text-xl font-bold mb-2 text-gray-900" data-i18n="menu.not_found_title">Menü Bulunamadı</h2>
+      <div class="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center text-5xl mx-auto mb-6">😔</div>
+      <h2 class="text-2xl font-bold mb-3 text-gray-900 font-display" data-i18n="menu.not_found_title">Menü Bulunamadı</h2>
       <p class="text-gray-400 text-sm" data-i18n="menu.not_found_desc">Bu menü mevcut değil veya kaldırılmış olabilir.</p>
     </div>
   </div>
 
+  <!-- Background layers -->
+  <div id="menuBg" class="menu-bg"></div>
+  <div id="menuBgOverlay" class="menu-bg-overlay"></div>
+
   <!-- Menu App -->
-  <div id="menuApp" class="hidden max-w-lg mx-auto">
+  <div id="menuApp" class="hidden max-w-lg mx-auto relative">
     
-    <!-- Cover -->
-    <header id="menuHeader" class="relative">
-      <div id="coverImage" class="cover-fade h-56 sm:h-64 bg-gradient-to-br from-purple-600 to-pink-500 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30"></div>
-        <button onclick="openLanguagePicker(this)" class="absolute top-4 right-4 z-10 px-3 py-2 glass rounded-2xl text-xs font-bold shadow-lg border border-white/30 hover:shadow-xl transition-all flex items-center gap-1.5">
+    <!-- Hero Header - Editorial Style -->
+    <header id="menuHeader" class="hero-header px-5 pt-6 pb-2">
+      <!-- Top bar: Logo + Language -->
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div id="restaurantLogo" class="w-11 h-11 rounded-[14px] flex items-center justify-center text-lg overflow-hidden flex-shrink-0 shadow-sm" style="border: 2px solid var(--card-border)">
+            🍽️
+          </div>
+          <div id="restaurantMeta" class="flex flex-col">
+            <span id="restaurantAddress" class="text-[10px] font-medium tracking-wide uppercase opacity-40"></span>
+            <span id="restaurantPhone" class="text-[10px] font-medium opacity-30"></span>
+          </div>
+        </div>
+        <button onclick="openLanguagePicker(this)" class="px-3 py-1.5 rounded-full text-[10px] font-bold transition-all flex items-center gap-1" style="background:var(--card-bg);border:1px solid var(--card-border);color:var(--text-primary);backdrop-filter:blur(12px)">
           🌐 <span class="lang-toggle-label">TR</span>
         </button>
       </div>
+
+      <!-- Restaurant Name - Big Typography -->
+      <div class="hero-name mb-2">
+        <h1 id="restaurantName" class="font-display font-bold text-[2rem] leading-[1.1] tracking-tight"></h1>
+      </div>
+
+      <!-- Description -->
+      <p id="restaurantDesc" class="hero-detail text-sm leading-relaxed opacity-50 mb-4"></p>
       
-      <!-- Restaurant Card -->
-      <div class="relative -mt-24 mx-4 z-10">
-        <div id="restaurantInfoCard" class="rounded-3xl p-5 shadow-2xl shadow-black/5 border border-white/40" style="background:rgba(255,255,255,0.8);backdrop-filter:blur(24px)">
-          <div class="flex items-start gap-4">
-            <div id="restaurantLogo" class="w-[60px] h-[60px] rounded-2xl bg-white shadow-lg flex items-center justify-center text-2xl border-2 border-white overflow-hidden flex-shrink-0 ring-2 ring-black/5">
-              🍽️
-            </div>
-            <div class="flex-1 min-w-0 pt-0.5">
-              <h1 id="restaurantName" class="text-lg font-extrabold tracking-tight leading-snug"></h1>
-              <p id="restaurantDesc" class="text-xs mt-1 opacity-60 line-clamp-2 leading-relaxed"></p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11px] opacity-50 font-medium">
-            <span id="restaurantAddress" class="flex items-center gap-1"></span>
-            <span id="restaurantPhone" class="flex items-center gap-1"></span>
-          </div>
-        </div>
+      <!-- Accent divider -->
+      <div id="heroDivider" class="hero-divider h-[3px] rounded-full mb-5 origin-left" style="width:48px"></div>
+
+      <!-- Search -->
+      <div class="relative hero-detail">
+        <input type="text" id="searchInput" placeholder="Menüde ara..." data-i18n-placeholder="menu.search" 
+          class="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all"
+          style="background:var(--card-bg);border:1px solid var(--card-border);color:var(--text-primary);backdrop-filter:blur(12px)">
+        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 opacity-25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
       </div>
     </header>
 
-    <!-- Search -->
-    <div class="px-4 mt-5 mb-2">
-      <div class="relative">
-        <input type="text" id="searchInput" placeholder="Menüde ara..." data-i18n-placeholder="menu.search" 
-          class="w-full pl-11 pr-4 py-3 rounded-2xl text-sm outline-none transition-all border border-transparent focus:border-purple-200 focus:shadow-lg focus:shadow-purple-500/5"
-          style="background: rgba(0,0,0,0.04);">
-        <svg class="w-[18px] h-[18px] text-gray-300 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </div>
-    </div>
-
     <!-- Category Tabs (Sticky) -->
-    <nav class="sticky top-0 z-30" id="categoryNav" style="backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)">
+    <nav class="sticky top-0 z-30 glass" id="categoryNav" style="border-bottom: 1px solid var(--card-border);">
       <div class="px-4 py-3">
-        <div id="categoryTabs" class="category-tabs flex overflow-x-auto gap-2">
-        </div>
+        <div id="categoryTabs" class="category-tabs flex overflow-x-auto gap-2"></div>
       </div>
     </nav>
 
-    <!-- Popular Items -->
-    <div id="popularSection" class="hidden pb-4">
+    <!-- Popular Items (Horizontal Scroll) -->
+    <div id="popularSection" class="hidden pb-2 pt-3">
       <div class="px-4 flex items-center gap-2 mb-3">
-        <div class="w-7 h-7 bg-amber-50 rounded-xl flex items-center justify-center text-sm">🔥</div>
-        <h2 class="font-bold text-sm tracking-tight" data-i18n="menu.popular">Popüler</h2>
+        <div class="w-7 h-7 rounded-xl flex items-center justify-center text-sm" style="background:rgba(251,191,36,0.15)">🔥</div>
+        <h2 class="font-display font-bold text-base tracking-tight" data-i18n="menu.popular">Popüler</h2>
       </div>
-      <div id="popularItems" class="flex overflow-x-auto gap-3 px-4 pb-1">
-      </div>
+      <div id="popularItems" class="popular-scroll flex overflow-x-auto gap-3 px-4 pb-2"></div>
     </div>
 
-    <!-- Menu Items -->
-    <div id="menuCategories" class="px-4 pb-28">
-    </div>
+    <!-- Menu Categories & Items -->
+    <div id="menuCategories" class="px-4 pb-28 pt-2"></div>
 
     <!-- Footer -->
-    <footer class="fixed bottom-0 left-0 right-0 z-20" id="menuFooter">
-      <div class="max-w-lg mx-auto px-4 py-3 text-center" id="menuFooterInner">
-        <a href="/" class="text-[10px] opacity-30 hover:opacity-60 transition-opacity font-medium tracking-widest uppercase" data-i18n="menu.footer">
+    <footer class="fixed bottom-0 left-0 right-0 z-20 glass" id="menuFooter" style="border-top: 1px solid var(--card-border);">
+      <div class="max-w-lg mx-auto px-4 py-3 text-center">
+        <a href="/" class="text-[10px] opacity-25 hover:opacity-50 transition-opacity font-medium tracking-widest uppercase" data-i18n="menu.footer">
           Tadında Menu ile oluşturuldu ✨
         </a>
       </div>
     </footer>
   </div>
 
-  <!-- Item Modal -->
+  <!-- Item Detail Modal -->
   <div id="itemModal" class="hidden fixed inset-0 z-50">
-    <div class="modal-bg absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeItemModal()"></div>
+    <div class="modal-bg absolute inset-0 bg-black/60 backdrop-blur-md" onclick="closeItemModal()"></div>
     <div class="modal-sheet absolute bottom-0 left-0 right-0 max-w-lg mx-auto">
-      <div class="bg-white rounded-t-[2rem] max-h-[85vh] overflow-y-auto shadow-2xl">
+      <div class="bg-white rounded-t-[2rem] max-h-[88vh] overflow-y-auto shadow-2xl">
         <div class="flex justify-center pt-3 pb-1"><div class="w-10 h-1 bg-gray-200 rounded-full"></div></div>
-        <div id="itemModalImage" class="h-64 bg-gray-50 relative mx-4 rounded-2xl overflow-hidden">
+        <div id="itemModalImage" class="h-72 bg-gray-50 relative mx-4 rounded-2xl overflow-hidden">
           <button onclick="closeItemModal()" class="absolute top-3 right-3 w-9 h-9 bg-black/30 backdrop-blur-sm text-white rounded-full flex items-center justify-center text-lg hover:bg-black/50 transition">&times;</button>
         </div>
         <div class="p-5 pt-4">
           <div class="flex justify-between items-start gap-3 mb-2">
-            <h2 id="itemModalName" class="text-lg font-bold leading-snug"></h2>
-            <span id="itemModalPrice" class="text-lg font-extrabold text-purple-600 whitespace-nowrap price-tag"></span>
+            <h2 id="itemModalName" class="text-xl font-display font-bold leading-snug"></h2>
+            <span id="itemModalPrice" class="text-xl font-extrabold whitespace-nowrap price-tag"></span>
           </div>
           <p id="itemModalDesc" class="text-sm text-gray-400 leading-relaxed mb-4"></p>
           <div id="itemModalAllergens" class="hidden">
@@ -202,27 +274,27 @@
       return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.55;
     }
 
-    function getThemeColors(bgColor) {
-      const dark = isDarkBg(bgColor);
+    function getThemeColors(bgColor, hasBgImage) {
+      const dark = hasBgImage ? true : isDarkBg(bgColor);
       return {
         isDark: dark,
         textPrimary: dark ? '#FFFFFF' : '#111827',
         textSecondary: dark ? '#d1d5db' : '#6b7280',
         textMuted: dark ? '#9ca3af' : '#9ca3af',
-        cardBg: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.85)',
-        cardBorder: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)',
-        inputBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
+        cardBg: dark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.92)',
+        cardBorder: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+        inputBg: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.03)',
         inputText: dark ? '#FFFFFF' : '#111827',
-        badgeBg: dark ? 'rgba(251,191,36,0.15)' : '#fef3c7',
+        badgeBg: dark ? 'rgba(251,191,36,0.2)' : 'rgba(251,191,36,0.12)',
         badgeText: dark ? '#fbbf24' : '#b45309',
         inactiveTabBg: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
-        inactiveTabText: dark ? 'rgba(255,255,255,0.6)' : '#6b7280',
-        footerBg: dark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.7)',
-        navBg: dark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)',
-        popularCardBg: dark ? 'rgba(255,255,255,0.08)' : '#ffffff',
-        popularCardBorder: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-        infoBg: dark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.8)',
-        infoBorder: dark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.4)',
+        inactiveTabText: dark ? 'rgba(255,255,255,0.55)' : '#6b7280',
+        navBg: dark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.85)',
+        popularCardBg: dark ? 'rgba(0,0,0,0.45)' : '#ffffff',
+        popularCardBorder: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+        infoBg: dark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.92)',
+        infoBorder: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.4)',
+        footerBg: dark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.85)',
       };
     }
 
@@ -276,93 +348,92 @@
 
     function renderMenu() {
       const { restaurant, menu } = menuData;
-      const bgColor = restaurant.bg_color || '#f8fafc';
+      const bgColor = restaurant.bg_color || '#ffffff';
       const primary = restaurant.primary_color || '#7c3aed';
       const secondary = restaurant.secondary_color || '#ec4899';
-      const theme = getThemeColors(bgColor);
+      const hasBgImage = !!restaurant.bg_image_url;
+      const theme = getThemeColors(bgColor, hasBgImage);
       const currency = restaurant.currency || '₺';
 
-      // Set CSS var for cover-fade
-      document.getElementById('coverImage').style.setProperty('--bg-color', bgColor);
+      // CSS custom properties
+      document.documentElement.style.setProperty('--primary', primary);
+      document.documentElement.style.setProperty('--bg-color', hasBgImage ? 'transparent' : bgColor);
+      document.documentElement.style.setProperty('--text-primary', theme.textPrimary);
+      document.documentElement.style.setProperty('--text-secondary', theme.textSecondary);
+      document.documentElement.style.setProperty('--card-bg', theme.cardBg);
+      document.documentElement.style.setProperty('--card-border', theme.cardBorder);
 
-      // Body
-      document.body.style.backgroundColor = bgColor;
-      document.body.style.color = theme.textPrimary;
-
-      // Cover
-      if (restaurant.cover_url) {
-        const cover = document.getElementById('coverImage');
-        cover.style.backgroundImage = `url(${restaurant.cover_url})`;
-        cover.style.backgroundSize = 'cover';
-        cover.style.backgroundPosition = 'center';
+      // Background
+      const bgEl = document.getElementById('menuBg');
+      const overlayEl = document.getElementById('menuBgOverlay');
+      
+      if (hasBgImage) {
+        bgEl.style.backgroundImage = `url(${restaurant.bg_image_url})`;
+        bgEl.style.backgroundColor = '';
+        overlayEl.style.background = 'rgba(0,0,0,0.45)';
+        overlayEl.style.backdropFilter = '';
       } else {
-        document.getElementById('coverImage').style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
+        bgEl.style.backgroundImage = '';
+        bgEl.style.backgroundColor = bgColor;
+        overlayEl.style.background = '';
+        overlayEl.style.backdropFilter = '';
       }
 
-      // Restaurant Info Card 
-      const infoCard = document.getElementById('restaurantInfoCard');
-      infoCard.style.background = theme.infoBg;
-      infoCard.style.borderColor = theme.infoBorder;
-      if (theme.isDark) infoCard.style.backdropFilter = 'blur(24px)';
+      document.body.style.color = theme.textPrimary;
 
       // Logo
       const logoEl = document.getElementById('restaurantLogo');
+      logoEl.style.background = theme.cardBg;
       if (restaurant.logo_url) {
         logoEl.innerHTML = `<img src="${restaurant.logo_url}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='🍽️'">`;
       } else {
         logoEl.innerHTML = '🍽️';
       }
 
-      // Name & Desc
+      // Name
       document.getElementById('restaurantName').textContent = restaurant.name;
       document.getElementById('restaurantName').style.color = theme.textPrimary;
+
+      // Desc
       const descEl = document.getElementById('restaurantDesc');
       descEl.textContent = restaurant.description || '';
       descEl.style.color = theme.textSecondary;
 
+      // Accent divider
+      document.getElementById('heroDivider').style.background = `linear-gradient(90deg, ${primary}, ${secondary})`;
+
+      // Address & Phone
       if (restaurant.address) {
         const a = document.getElementById('restaurantAddress');
-        a.innerHTML = `📍 ${restaurant.address}`;
+        a.textContent = restaurant.address;
         a.style.color = theme.textSecondary;
       }
       if (restaurant.phone) {
         const p = document.getElementById('restaurantPhone');
-        p.innerHTML = `📞 ${restaurant.phone}`;
+        p.textContent = restaurant.phone;
         p.style.color = theme.textSecondary;
-      }
-
-      // Language picker refresh
-      if (!document.getElementById('coverImage').querySelector('.lang-btn-cover')) {
-        const btn = document.createElement('button');
-        btn.className = 'lang-btn-cover absolute top-4 right-4 z-10 px-3 py-2 glass rounded-2xl text-xs font-bold shadow-lg border border-white/30 hover:shadow-xl transition-all flex items-center gap-1.5';
-        btn.onclick = function() { openLanguagePicker(this); };
-        const info = getLangInfo(getCurrentLang());
-        btn.innerHTML = `🌐 <span class="lang-toggle-label">${info.flag} ${info.code.toUpperCase()}</span>`;
-        document.getElementById('coverImage').appendChild(btn);
       }
 
       // Search
       const searchInput = document.getElementById('searchInput');
-      searchInput.style.backgroundColor = theme.inputBg;
-      searchInput.style.color = theme.inputText;
 
-      // Nav (sticky) - apply bg directly to nav to prevent white strip
+      // Nav
       const navEl = document.getElementById('categoryNav');
       navEl.style.background = theme.navBg;
-      navEl.style.borderBottom = `1px solid ${theme.cardBorder}`;
+      navEl.style.borderBottomColor = theme.cardBorder;
 
-      // Category Tabs
+      // Category tabs
       const tabsContainer = document.getElementById('categoryTabs');
       tabsContainer.innerHTML = menu.map((cat, i) => `
         <button onclick="scrollToCategory('${cat.id}')" 
           class="category-tab flex-shrink-0 px-4 py-2 rounded-2xl text-xs font-semibold transition whitespace-nowrap"
           id="tab-${cat.id}"
-          style="background: ${i === 0 ? primary : theme.inactiveTabBg}; color: ${i === 0 ? '#fff' : theme.inactiveTabText}; ${i === 0 ? 'box-shadow: 0 4px 12px ' + hexToRgba(primary, 0.3) : ''}">
+          style="background: ${i === 0 ? primary : theme.inactiveTabBg}; color: ${i === 0 ? '#fff' : theme.inactiveTabText}; ${i === 0 ? 'box-shadow: 0 4px 14px ' + hexToRgba(primary, 0.35) : ''}">
           ${cat.name}
         </button>
       `).join('');
 
-      // Popular
+      // Popular items
       const popularItems = [];
       menu.forEach(cat => {
         cat.items.filter(i => i.is_popular).forEach(item => {
@@ -376,16 +447,19 @@
         popSection.querySelector('h2').style.color = theme.textPrimary;
         document.getElementById('popularItems').innerHTML = popularItems.map(item => `
           <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
-            class="popular-card flex-shrink-0 w-36 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-shadow"
+            class="popular-card flex-shrink-0 w-40 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
             style="background:${theme.popularCardBg}; border:1px solid ${theme.popularCardBorder}">
             <div class="relative overflow-hidden">
               ${item.image_url 
-                ? `<img src="${item.image_url}" class="w-full h-28 object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="hidden w-full h-28 bg-gray-50 items-center justify-center text-3xl">🍽️</div>` 
-                : `<div class="w-full h-28 bg-gray-50 flex items-center justify-center text-3xl">🍽️</div>`}
+                ? `<img src="${item.image_url}" class="w-full h-36 object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="hidden w-full h-36 items-center justify-center text-3xl" style="background:${theme.inputBg}">🍽️</div>` 
+                : `<div class="w-full h-36 flex items-center justify-center text-3xl" style="background:${theme.inputBg}">🍽️</div>`}
+              <div class="absolute top-2 left-2 px-2 py-0.5 rounded-lg text-[9px] font-bold tracking-wide uppercase" style="background:rgba(239,68,68,0.9);color:#fff">
+                ⭐ HIT
+              </div>
             </div>
-            <div class="p-2.5">
+            <div class="p-3">
               <div class="font-semibold text-xs truncate leading-tight" style="color:${theme.textPrimary}">${item.name}</div>
-              <div class="font-extrabold text-sm mt-1.5 price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</div>
+              <div class="font-extrabold text-base mt-1 price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</div>
             </div>
           </div>
         `).join('');
@@ -393,35 +467,59 @@
         popSection.classList.add('hidden');
       }
 
-      // Menu categories & items
+      // Menu categories & items - FOOD-FORWARD DESIGN
       const menuContainer = document.getElementById('menuCategories');
       menuContainer.innerHTML = menu.map(cat => `
-        <div id="category-${cat.id}" class="mb-6">
-          <div class="pt-5 pb-3">
-            <h2 class="font-bold text-base tracking-tight" style="color:${theme.textPrimary}">${cat.name}</h2>
-            ${cat.description ? `<p class="text-xs mt-0.5 leading-relaxed" style="color:${theme.textSecondary}">${cat.description}</p>` : ''}
+        <div id="category-${cat.id}" class="mb-8">
+          <div class="pt-4 pb-3">
+            <h2 class="font-display font-bold text-xl tracking-tight" style="color:${theme.textPrimary}">${cat.name}</h2>
+            ${cat.description ? `<p class="text-xs mt-1 leading-relaxed" style="color:${theme.textSecondary}">${cat.description}</p>` : ''}
           </div>
-          <div class="space-y-2.5">
-            ${cat.items.map(item => `
-              <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
-                class="menu-item group rounded-2xl p-3.5 flex gap-3.5 cursor-pointer"
-                style="background:${theme.cardBg}; border:1px solid ${theme.cardBorder}; backdrop-filter:blur(10px)">
-                ${item.image_url ? `
-                  <div class="w-[72px] h-[72px] rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-black/5">
-                    <img src="${item.image_url}" class="item-img w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full bg-gray-50 flex items-center justify-center text-2xl\\'>🍽️</div>'">
+          <div class="food-grid">
+            ${cat.items.map((item, idx) => {
+              // Items WITH images get visual card layout
+              if (item.image_url) {
+                return `
+                <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
+                  class="food-card rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-shadow"
+                  style="background:${theme.cardBg}; border:1px solid ${theme.cardBorder}; backdrop-filter:blur(12px)">
+                  <div class="relative overflow-hidden aspect-[4/3]">
+                    <img src="${item.image_url}" class="food-img w-full h-full object-cover" 
+                      onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-3xl\\' style=\\'background:${theme.inputBg}\\'>🍽️</div>'">
+                    ${item.is_popular ? `<div class="absolute top-2 left-2 px-2 py-0.5 rounded-lg text-[8px] font-bold tracking-wide uppercase" style="background:rgba(239,68,68,0.9);color:#fff">⭐ Popüler</div>` : ''}
+                    ${!item.is_available ? `<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="text-white text-xs font-bold bg-red-500/80 px-3 py-1 rounded-full">Tükendi</span></div>` : ''}
                   </div>
-                ` : ''}
-                <div class="flex-1 min-w-0 flex flex-col justify-center">
-                  <div class="flex items-center gap-2">
-                    <span class="font-semibold text-sm leading-tight" style="color:${theme.textPrimary}">${item.name}</span>
-                    ${item.is_popular ? `<span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-md font-bold" style="background:${theme.badgeBg};color:${theme.badgeText}">⭐</span>` : ''}
+                  <div class="p-3">
+                    <div class="font-semibold text-sm leading-tight truncate" style="color:${theme.textPrimary}">${item.name}</div>
+                    ${item.description ? `<p class="text-[11px] line-clamp-2 mt-1 leading-relaxed" style="color:${theme.textMuted}">${item.description}</p>` : ''}
+                    <div class="flex items-center justify-between mt-2">
+                      <span class="font-extrabold text-base price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</span>
+                      <div class="w-7 h-7 rounded-full flex items-center justify-center" style="background:${hexToRgba(primary, 0.12)}">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="${primary}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                      </div>
+                    </div>
                   </div>
-                  ${item.description ? `<p class="text-xs line-clamp-2 mt-0.5 leading-relaxed" style="color:${theme.textMuted}">${item.description}</p>` : ''}
-                  <div class="font-extrabold text-sm mt-1.5 price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</div>
-                </div>
-                ${!item.image_url ? `<div class="flex items-center flex-shrink-0"><svg class="w-4 h-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>` : ''}
-              </div>
-            `).join('')}
+                </div>`;
+              } else {
+                // Items WITHOUT images get compact list card (full width)
+                return `
+                <div onclick="showItemDetail(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
+                  class="food-card full-width rounded-2xl p-4 cursor-pointer transition-shadow hover:shadow-lg flex items-center gap-3"
+                  style="background:${theme.cardBg}; border:1px solid ${theme.cardBorder}; backdrop-filter:blur(12px)">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold text-sm leading-tight" style="color:${theme.textPrimary}">${item.name}</span>
+                      ${item.is_popular ? `<span class="flex-shrink-0 text-[9px] px-1.5 py-0.5 rounded-md font-bold" style="background:${theme.badgeBg};color:${theme.badgeText}">⭐</span>` : ''}
+                    </div>
+                    ${item.description ? `<p class="text-[11px] line-clamp-2 mt-1 leading-relaxed" style="color:${theme.textMuted}">${item.description}</p>` : ''}
+                  </div>
+                  <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="font-extrabold text-base price-tag" style="color:${primary}">${currency}${Number(item.price).toFixed(0)}</span>
+                    <svg class="w-4 h-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  </div>
+                </div>`;
+              }
+            }).join('')}
           </div>
         </div>
       `).join('');
@@ -431,18 +529,18 @@
       footerEl.style.background = theme.footerBg;
       footerEl.style.backdropFilter = 'blur(20px)';
       footerEl.style.WebkitBackdropFilter = 'blur(20px)';
-      footerEl.style.borderTop = `1px solid ${theme.cardBorder}`;
+      footerEl.style.borderTopColor = theme.cardBorder;
       footerEl.querySelector('a').style.color = theme.textMuted;
 
-      // Search filter
+      // Search functionality
       searchInput.addEventListener('input', (e) => {
         const q = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('.menu-item').forEach(el => {
-          el.style.display = !q || el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+        document.querySelectorAll('.food-card').forEach(el => {
+          el.style.display = !q || el.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
       });
 
-      // Intersection Observer for tabs
+      // Intersection Observer for tab tracking
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -455,7 +553,7 @@
         if (el) observer.observe(el);
       });
 
-      // Done
+      // Done loading
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('menuApp').classList.remove('hidden');
     }
@@ -474,12 +572,13 @@
       activeCategoryId = catId;
       const restaurant = menuData.restaurant;
       const primary = restaurant.primary_color || '#7c3aed';
-      const theme = getThemeColors(restaurant.bg_color || '#f8fafc');
+      const hasBgImage = !!restaurant.bg_image_url;
+      const theme = getThemeColors(restaurant.bg_color || '#ffffff', hasBgImage);
       document.querySelectorAll('.category-tab').forEach(tab => {
         const active = tab.id === `tab-${catId}`;
         tab.style.background = active ? primary : theme.inactiveTabBg;
         tab.style.color = active ? '#fff' : theme.inactiveTabText;
-        tab.style.boxShadow = active ? `0 4px 12px ${hexToRgba(primary, 0.3)}` : 'none';
+        tab.style.boxShadow = active ? `0 4px 14px ${hexToRgba(primary, 0.35)}` : 'none';
         if (active) tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       });
     }

@@ -110,6 +110,77 @@ const COLOR_PALETTES = [
 ];
 
 let selectedPaletteId = null;
+
+// ==================== BACKGROUND STYLE ====================
+function selectBgStyle(style) {
+  document.getElementById('restBgStyle').value = style;
+  document.querySelectorAll('.bg-style-card').forEach(card => {
+    card.classList.remove('border-purple-500');
+    card.classList.add('border-gray-200');
+  });
+  const selected = document.getElementById(`bgStyle-${style}`);
+  if (selected) {
+    selected.classList.remove('border-gray-200');
+    selected.classList.add('border-purple-500');
+  }
+  // Auto-set bg_color based on style
+  if (style === 'white') {
+    document.getElementById('restBg').value = '#FFFFFF';
+  } else if (style === 'dark') {
+    document.getElementById('restBg').value = '#0a0a0a';
+  }
+}
+
+let editBgImageChanged = false;
+let editBgImageRemoved = false;
+
+function selectEditBgStyle(style) {
+  document.getElementById('editBgStyle').value = style;
+  document.querySelectorAll('.edit-bg-style-card').forEach(card => {
+    card.classList.remove('border-purple-500');
+    card.classList.add('border-gray-200');
+  });
+  const selected = document.getElementById(`editBgStyle-${style}`);
+  if (selected) {
+    selected.classList.remove('border-gray-200');
+    selected.classList.add('border-purple-500');
+  }
+  // Show/hide image upload
+  const uploadArea = document.getElementById('editBgImageUpload');
+  if (style === 'image') {
+    uploadArea.classList.remove('hidden');
+  } else {
+    uploadArea.classList.add('hidden');
+  }
+  // Auto-set bg_color
+  if (style === 'white') {
+    document.getElementById('editRestBg').value = '#FFFFFF';
+  } else if (style === 'dark') {
+    document.getElementById('editRestBg').value = '#0a0a0a';
+  }
+  updateEditColorPreview();
+}
+
+function previewEditBgImage(input) {
+  if (input.files && input.files[0]) {
+    editBgImageChanged = true;
+    editBgImageRemoved = false;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('editBgImagePreview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+      document.getElementById('editBgImageRemoveBtn').classList.remove('hidden');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function removeEditBgImage() {
+  editBgImageRemoved = true;
+  editBgImageChanged = false;
+  document.getElementById('editBgImagePreview').innerHTML = '🏞️';
+  document.getElementById('editBgImageInput').value = '';
+  document.getElementById('editBgImageRemoveBtn').classList.add('hidden');
+}
 // ==================== HELPERS ====================
 async function api(url, options = {}) {
   const res = await fetch(url, {
@@ -530,6 +601,28 @@ function showEditRestaurantModal(restaurantId) {
   renderEditColorPalettes();
   updateEditColorPreview();
 
+  // Detect current bg style
+  editBgImageChanged = false;
+  editBgImageRemoved = false;
+  if (r.bg_image_url) {
+    selectEditBgStyle('image');
+    document.getElementById('editBgImagePreview').innerHTML = `<img src="${r.bg_image_url}" class="w-full h-full object-cover">`;
+    document.getElementById('editBgImageRemoveBtn').classList.remove('hidden');
+  } else {
+    const bgHex = (r.bg_color || '#FFFFFF').replace('#', '').toLowerCase();
+    const rb = parseInt(bgHex.substr(0,2), 16);
+    const gb = parseInt(bgHex.substr(2,2), 16);
+    const bb = parseInt(bgHex.substr(4,2), 16);
+    const brightness = (0.299 * rb + 0.587 * gb + 0.114 * bb) / 255;
+    if (brightness < 0.15) {
+      selectEditBgStyle('dark');
+    } else {
+      selectEditBgStyle('white');
+    }
+    document.getElementById('editBgImagePreview').innerHTML = '🏞️';
+    document.getElementById('editBgImageRemoveBtn').classList.add('hidden');
+  }
+
   // Listen for color changes to update preview
   ['editRestPrimary', 'editRestSecondary', 'editRestBg'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateEditColorPreview);
@@ -694,6 +787,23 @@ async function handleEditRestaurant(e) {
       }
     } else if (editLogoRemoved) {
       await fetch(`/api/restaurants/${editingRestaurantId}/logo`, { method: 'DELETE' });
+    }
+
+    // Handle bg image changes
+    const bgStyle = document.getElementById('editBgStyle').value;
+    if (bgStyle === 'image' && editBgImageChanged) {
+      const bgInput = document.getElementById('editBgImageInput');
+      if (bgInput.files && bgInput.files[0]) {
+        const formData = new FormData();
+        formData.append('bg_image', bgInput.files[0]);
+        await fetch(`/api/restaurants/${editingRestaurantId}/upload-bg`, {
+          method: 'POST',
+          body: formData
+        });
+      }
+    } else if (bgStyle !== 'image' || editBgImageRemoved) {
+      // Remove bg image if switching to white/dark
+      await fetch(`/api/restaurants/${editingRestaurantId}/bg-image`, { method: 'DELETE' });
     }
 
     closeModal('editRestaurantModal');
